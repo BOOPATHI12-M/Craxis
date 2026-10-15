@@ -6,7 +6,8 @@ GET  /                       service info
 GET  /health                 liveness check used by the extension
 GET  /model-info             model metadata and top features
 GET  /api/model-evaluation   held-out evaluation results
-POST /predict                {"url": "...", "intel": false} -> phishing probability
+POST /predict                {"url": "...", "intel": false, "explain": false} -> phishing probability
+                             "explain": true adds the per-website AI explanation
 GET  /test-pages/...         local safe test pages
 
 Environment
@@ -26,6 +27,8 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 import domain_intel
+from explain import explain as explain_prediction
+from explain import load_baselines
 from feature_extractor import FEATURE_NAMES, extract_features
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -81,6 +84,11 @@ except Exception as exc:  # fail fast with a clear message
     if __name__ == "__main__":
         sys.exit(1)
     raise
+
+
+BASELINES_PATH = os.path.join(os.path.dirname(MODEL_PATH), "feature_baselines.json")
+baselines = load_baselines(BASELINES_PATH, FEATURE_NAMES)
+print("[OK] Explanation baselines loaded" if baselines else "[WARN] No explanation baselines (run: python ml/build_feature_baselines.py)")
 
 
 def top_feature_pairs(limit: int = 6) -> list:
@@ -198,6 +206,12 @@ def predict():
             "feature_count": len(FEATURE_NAMES),
             "top_features": top_feature_pairs(5),
         }
+
+        if data.get("explain") is True:
+            explanation = explain_prediction(model_obj, features, baselines, FEATURE_NAMES)
+            # None means "cannot explain", which is reported as such and never as a result.
+            response["explanation"] = explanation
+            response["explanation_available"] = explanation is not None
 
         if data.get("intel") is True and domain_intel.intel_enabled():
             host = (urlparse(target_url).hostname or "").lower()

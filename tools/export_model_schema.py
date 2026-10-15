@@ -6,10 +6,10 @@ vs categorical, encoders, imputer and scaler values) without guessing.
 IMPORTANT: loading a joblib/pickle file runs code from the file. Only run this
 on a model file you created or fully trust, and preferably inside a virtual
 environment that has the SAME scikit-learn version the model was trained with
-(for the model in ml/model/phishing_model.joblib that is 1.8.0).
+(check the scikit-learn version recorded for that model).
 
 Usage:
-    python tools/export_model_schema.py ml/model/phishing_model.joblib
+    python tools/export_model_schema.py path/to/model.joblib
     python tools/export_model_schema.py path/to/model.joblib --out schema.json
 """
 import argparse

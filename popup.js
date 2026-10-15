@@ -145,8 +145,11 @@ async function runScanForTab(tab, isManual = false) {
 
     updateProgressText("Consulting the Random Forest AI model...");
     let isLocal = false;
+    let isPrivate = false;
     try {
-      isLocal = Scoring.isLoopbackHost(new URL(url).hostname);
+      const host = new URL(url).hostname;
+      isLocal = Scoring.isLoopbackHost(host);
+      isPrivate = !isLocal && Scoring.isLocalHost(host);
     } catch (e) {
       isLocal = false;
     }
@@ -157,7 +160,8 @@ async function runScanForTab(tab, isManual = false) {
     const combinedResult = Scoring.calculateCombinedScore(url, urlResult, pageResult, aiResult, {
       thresholds: SettingsStore.thresholds(popupSettings),
       trust,
-      aiSkipped: isLocal
+      aiSkipped: isLocal,
+      aiAdvisory: isPrivate
     });
 
     // Save result to background.js in-memory store
@@ -457,6 +461,7 @@ function displayCombinedResultFromObj(res) {
     if (aiScoreText) aiScoreText.textContent = `${res.aiScore ?? 0} / 100`;
     if (modelVersionText) modelVersionText.textContent = aiResult.model || "Random Forest";
     setAiOfflineNote(false);
+    renderAIExplanation(aiResult, res.url);
   } else {
     if (aiPredictionText) {
       aiPredictionText.textContent = res.aiSkipped
@@ -491,7 +496,11 @@ function displayCombinedResultFromObj(res) {
 
   if (urlCalcText) urlCalcText.textContent = `${safeUrlScore} × ${(urlWeight * 100).toFixed(0)}% = ${urlContrib.toFixed(1)}`;
   if (webpageCalcText) webpageCalcText.textContent = res.hasPageData ? `${safeWebScore} × ${(pageWeight * 100).toFixed(0)}% = ${pageContrib.toFixed(1)}` : "N/A";
-  if (aiCalcText) aiCalcText.textContent = res.hasAIData ? `${safeAiScore} × ${(aiWeight * 100).toFixed(0)}% = ${aiContrib.toFixed(1)}` : "N/A";
+  if (aiCalcText) {
+    aiCalcText.textContent = res.aiAdvisory
+      ? "shown for information, not counted (private network)"
+      : (res.hasAIData ? `${safeAiScore} × ${(aiWeight * 100).toFixed(0)}% = ${aiContrib.toFixed(1)}` : "N/A");
+  }
   if (finalCalcText) {
     const sumVal = (urlContrib + pageContrib + aiContrib).toFixed(1);
     finalCalcText.textContent = `${sumVal} → ${safeFinalScore} / 100`;
@@ -732,6 +741,56 @@ function renderReasonsList(container, reasons) {
     li.textContent = "No suspicious indicators detected.";
     container.appendChild(li);
   }
+}
+
+/**
+ * Shows which parts of THIS website's address pushed the AI score up or down.
+ */
+function renderAIExplanation(aiResult, url) {
+  const box = document.getElementById("aiExplainBox");
+  const list = document.getElementById("aiExplainList");
+  const note = document.getElementById("aiExplainNote");
+  if (!box || !list) return;
+
+  const features = aiResult && aiResult.explanation && Array.isArray(aiResult.explanation.features)
+    ? aiResult.explanation.features
+    : [];
+  list.textContent = "";
+  if (note) note.textContent = "";
+  if (features.length === 0) {
+    box.hidden = true;
+    return;
+  }
+
+  features.forEach((f) => {
+    const li = document.createElement("li");
+    const towardPhishing = f.effect_points > 0;
+    li.className = towardPhishing ? "check-fail" : "check-pass";
+    const left = document.createElement("span");
+    left.textContent = `${f.label}: ${f.value} (typical legitimate: ${f.typical_legitimate})`;
+    const right = document.createElement("strong");
+    right.textContent = `${towardPhishing ? "+" : ""}${f.effect_points} pts`;
+    li.appendChild(left);
+    li.appendChild(right);
+    list.appendChild(li);
+  });
+
+  if (note) {
+    const parts = [
+      "Points show how much each part moved this website's AI risk score, up (toward phishing) or down (toward legitimate). Each part is tested one at a time, so they do not have to add up exactly."
+    ];
+    let host = "";
+    try {
+      host = new URL(url).hostname;
+    } catch (e) {
+      host = "";
+    }
+    if (/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)) {
+      parts.push("This is a private network address. The model learned from public websites, where numeric addresses are mostly phishing, so such addresses score high even for real internal sites. Treat this score with caution.");
+    }
+    note.textContent = parts.join(" ");
+  }
+  box.hidden = false;
 }
 
 /**

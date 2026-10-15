@@ -163,8 +163,13 @@
     </div>
 
     <p id="evalSourceNote" style="color:#94a3b8;font-size:0.85rem;"></p>
+    <p style="color:#94a3b8;font-size:0.85rem;">
+      These figures are the model's score on its held-out test data, so they stay the same until the model is
+      retrained. The AI analysis of a specific website is in the extension popup (AI model result) and in each
+      scan's details on the History page.
+    </p>
     <div class="disclaimer-box">
-      <strong>⚠️ Model Limitations & Disclaimer:</strong> Evaluation metrics are calculated on a held-out split grouped by domain (see ml/MODEL-EVALUATION-REPORT.md). The Random Forest model evaluates numerical URL and structural DOM features. A high accuracy score indicates statistical model quality but does not constitute an absolute guarantee of safety for unanalyzed real-world pages.
+      <strong>⚠️ Model Limitations & Disclaimer:</strong> Evaluation metrics are calculated on a held-out split grouped by domain. The Random Forest model evaluates numerical URL and structural DOM features. A high accuracy score indicates statistical model quality but does not constitute an absolute guarantee of safety for unanalyzed real-world pages.
     </div>
   </div>
 

@@ -14,7 +14,7 @@
 - **Trusted sites:** a built-in list of 1000 trusted domains plus your own list. Trusted sites are never blocked.
 - **History and dashboard:** the last 100 scans with search, filters and charts.
 - **Settings:** switches, risk thresholds, backend address, optional domain intelligence.
-- **Local and private:** page analysis runs in your browser. See [PRIVACY.md](PRIVACY.md).
+- **Local and private:** page analysis runs in your browser. Nothing is uploaded and no analytics are used.
 
 ---
 
@@ -128,7 +128,7 @@ python ml/build_dataset.py      # downloads both feeds, writes ml/dataset/phishi
 python ml/train_model.py        # cross-validates, trains, evaluates, saves the model
 ```
 
-Evaluation uses a 20% split **grouped by domain**, so no site appears in both sets. Current held-out results are in [ml/MODEL-EVALUATION-REPORT.md](ml/MODEL-EVALUATION-REPORT.md).
+Evaluation uses a 20% split **grouped by domain**, so no site appears in both sets. Run `python ml/evaluate_model.py` to refresh `ml/evaluation_results.json`, which the test-center evaluation page reads.
 
 > **Limitations.** The legitimate class uses real domains but synthetic paths, and phishing comes from one feed. Expect roughly a 5% false-positive rate on unknown sites and about two thirds of phishing URLs caught from the URL alone. The final decision combines this with the URL rules and page checks, and one layer alone cannot block a page. Retrain on fresh data regularly.
 
@@ -151,14 +151,11 @@ CI runs the same steps in `.github/workflows/ci.yml`.
 
 ## 🔒 Privacy
 
-Passwords, form values and cookies are never read. Page URLs go only to the backend you configure, which is on your own machine by default. Details and permission reasons are in [PRIVACY.md](PRIVACY.md).
+Passwords, form values and cookies are never read. Page URLs go only to the backend you configure, which is on your own machine by default. The extension needs `scripting`, `storage` and `webNavigation`, plus access to http and https pages so it can analyse them.
 
 ---
 
 ## 📂 More documentation
 
-- [extension.md](extension.md): code walkthrough
-- [improve.md](improve.md): improvement roadmap and status
-- [CHANGELOG.md](CHANGELOG.md)
 - [ml/README.md](ml/README.md): backend and model details
 - [test-pages/README.md](test-pages/README.md): local test suite

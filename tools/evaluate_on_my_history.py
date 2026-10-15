@@ -37,10 +37,6 @@ warnings.filterwarnings("ignore")
 
 MODELS = {
     "v3 (active)": "phishing_model.pkl",
-    "phresh only": "candidate_phresh_all.pkl",
-    "combined concat": "candidate_combined_concat.pkl",
-    "combined weighted": "candidate_combined_weighted.pkl",
-    "combined balanced": "candidate_combined_balanced.pkl",
 }
 
 BROWSER_DIRS = {

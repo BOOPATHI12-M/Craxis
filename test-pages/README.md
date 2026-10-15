@@ -22,7 +22,6 @@ test-pages/
 ├── multiple-indicators-test.html# TC09: Multi-Indicator Controlled Simulation
 ├── permission-request-test.html # TC11: Camera requested on a sign-in page (browser shows its own prompt: choose Block)
 ├── critical-risk-test.html     # TC10: Critical Risk Combination Test (Dangerous)
-├── TEST-REPORT.md              # Detailed Test Specifications & Results Report
 └── README.md                   # Module Overview & Documentation
 ```
 

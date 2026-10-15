@@ -10,7 +10,7 @@ Steps
    cross-validation (ROC-AUC) and keep the better one.
 4. Fit on the training split, report held-out metrics, and save the model
    together with its feature list.
-5. Regenerate evaluation_results.json and MODEL-EVALUATION-REPORT.md.
+5. Regenerate evaluation_results.json.
 
 Usage:
     python ml/train_model.py [--dataset path/to/file.csv]

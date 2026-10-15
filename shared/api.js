@@ -33,7 +33,7 @@
   function predict(url, settings, timeoutMs) {
     if (!url || typeof url !== "string") return Promise.resolve(null);
     var useIntel = !!(settings && settings.useIntel);
-    var key = baseUrl(settings) + "|" + (useIntel ? "i|" : "n|") + url;
+    var key = baseUrl(settings) + "|e|" + (useIntel ? "i|" : "n|") + url;
     var hit = aiCache.get(key);
     if (hit && Date.now() - hit.ts < CACHE_TTL_MS) return Promise.resolve(hit.data);
 
@@ -42,7 +42,7 @@
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: url, intel: useIntel })
+        body: JSON.stringify({ url: url, intel: useIntel, explain: true })
       },
       timeoutMs || 3500
     ).then(function (data) {

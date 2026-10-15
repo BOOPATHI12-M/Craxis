@@ -157,9 +157,14 @@
               <div class="analysis-row"><span>Model Version:</span> <strong id="modelVersionText">-</strong>
               </div>
             </div>
+            <div id="aiExplainBox" hidden>
+              <span class="label margin-top-4">Why the AI said this for this website:</span>
+              <ul id="aiExplainList" class="features-list"></ul>
+              <p id="aiExplainNote" class="ai-explanatory-note"></p>
+            </div>
             <p class="ai-explanatory-note">
-              Note: This is a model-estimated phishing probability based on structural URL & webpage features learned
-              from dataset training.
+              Note: This is a model-estimated phishing probability based on the structure of the address, learned from
+              training data. It is an estimate, not proof that a site is malicious.
             </p>
           </div>
         </details>

@@ -60,7 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
       formattedTime: item.formattedTime || item.timestamp || "Recently Scanned",
       reasons: Array.isArray(item.reasons) ? item.reasons : ["No suspicious indicators detected."],
       aiPrediction: item.aiPrediction || "N/A",
-      aiStatus: item.aiStatus || ""
+      aiStatus: item.aiStatus || "",
+      aiExplanation: Array.isArray(item.aiExplanation) ? item.aiExplanation : null,
+      aiProbability: typeof item.aiProbability === "number" ? item.aiProbability : null
     };
   }
 
@@ -249,6 +251,35 @@ document.addEventListener("DOMContentLoaded", () => {
       <div><small style="color: #94a3b8;">AI Score (50%)</small><br><strong>${item.aiScore ?? "Unavailable"}</strong></div>
     `;
 
+    // AI analysis for this website: which parts of the address moved the score.
+    const aiBox = document.createElement("div");
+    if (Array.isArray(item.aiExplanation) && item.aiExplanation.length > 0) {
+      const aiTitle = document.createElement("h4");
+      aiTitle.style.cssText = "color: #38bdf8; margin-top: 0.5rem;";
+      aiTitle.textContent = "AI analysis of this website:";
+      aiBox.appendChild(aiTitle);
+      const aiList = document.createElement("ul");
+      aiList.style.cssText = "list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px;";
+      item.aiExplanation.forEach((f) => {
+        const li = document.createElement("li");
+        li.style.cssText = "display: flex; justify-content: space-between; gap: 12px; font-size: 0.85rem;";
+        const left = document.createElement("span");
+        left.textContent = `${f.label}: ${f.value} (typical legitimate: ${f.typical})`;
+        const right = document.createElement("strong");
+        const up = f.effect > 0;
+        right.style.color = up ? "#fca5a5" : "#34d399";
+        right.textContent = `${up ? "+" : ""}${f.effect} pts`;
+        li.appendChild(left);
+        li.appendChild(right);
+        aiList.appendChild(li);
+      });
+      aiBox.appendChild(aiList);
+      const aiNote = document.createElement("p");
+      aiNote.style.cssText = "font-size: 0.75rem; color: #94a3b8; margin-top: 6px;";
+      aiNote.textContent = "Each part is replaced by the typical legitimate value one at a time. This explains the score, it is not proof.";
+      aiBox.appendChild(aiNote);
+    }
+
     const reasonsTitle = document.createElement("h4");
     reasonsTitle.style.cssText = "color: #a78bfa; margin-top: 0.5rem;";
     reasonsTitle.textContent = "Detection Reasons:";
@@ -270,6 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     modalBody.appendChild(summaryBox);
     modalBody.appendChild(scoreBox);
+    modalBody.appendChild(aiBox);
     modalBody.appendChild(reasonsTitle);
     modalBody.appendChild(reasonsList);
 

@@ -411,15 +411,20 @@
     var webpageScore = hasPageData ? pageResult.score : 0;
     var hasAIData = !!(aiResult && typeof aiResult.ai_risk_score === "number");
     var aiScore = hasAIData ? aiResult.ai_risk_score : 0;
+    // Advisory: the AI answer is shown to the user but is not part of the score.
+    // Used for private network addresses, where the model (trained on public
+    // websites, where numeric addresses are mostly phishing) is not reliable.
+    var aiAdvisory = hasAIData && !!opts.aiAdvisory;
+    var aiCounts = hasAIData && !aiAdvisory;
 
     var w;
     var urlWeight;
     var pageWeight = 0;
     var aiWeight = 0;
-    if (hasAIData && hasPageData) {
+    if (aiCounts && hasPageData) {
       w = cfg.weights.all;
       urlWeight = w.url; pageWeight = w.page; aiWeight = w.ai;
-    } else if (hasAIData) {
+    } else if (aiCounts) {
       w = cfg.weights.url_ai;
       urlWeight = w.url; aiWeight = w.ai;
     } else if (hasPageData) {
@@ -439,7 +444,7 @@
     // risk, the weighted average must not dilute that agreement below DANGEROUS.
     var layerScores = [urlScore];
     if (hasPageData) layerScores.push(webpageScore);
-    if (hasAIData) layerScores.push(aiScore);
+    if (aiCounts) layerScores.push(aiScore);
     var corroborationMin = cfg.thresholds.corroboration_min || 50;
     var corroborated = layerScores.length >= 2 && layerScores.every(function (s) { return s >= corroborationMin; });
     if (corroborated && finalScore < thresholds.dangerous) {
@@ -471,6 +476,7 @@
       rawScore: rawScore,
       corroborated: corroborated,
       aiSkipped: !!opts.aiSkipped,
+      aiAdvisory: aiAdvisory,
       finalScore: finalScore,
       statusLevel: classify(finalScore, thresholds),
       trusted: trust ? trust.source : null,

@@ -211,6 +211,36 @@ async function runFlows(context, worker) {
     await pg.close();
   }
 
+  // Flow 7: a private-network portal is analysed by the AI, with a per-website explanation.
+  {
+    const portal = "http://172.16.0.1:8090/httpclient.html";
+    const pg = await context.newPage();
+    await pg.route(portal, (route) => route.fulfill({
+      contentType: "text/html",
+      body: "<!doctype html><title>College Web Portal</title><form action='/login'><input name=u><input type=password name=p></form>"
+    }));
+    await pg.goto(portal, { waitUntil: "load" }).catch(() => {});
+    const found = await waitForScan(worker, portal);
+    const portalBlocked = pg.url().includes("warning.html");
+    const res = found && found.scan.result;
+    check("Private network address is analysed by the AI", res && res.hasAIData === true && res.aiSkipped === false,
+      res ? JSON.stringify({ ai: res.hasAIData, skipped: res.aiSkipped }) : "no result");
+    check("The AI answer is advisory there and the portal is not blocked",
+      res && res.aiAdvisory === true && res.aiContrib === 0 && res.statusLevel !== "DANGEROUS" && !portalBlocked,
+      res ? JSON.stringify({ advisory: res.aiAdvisory, contrib: res.aiContrib, level: res.statusLevel, final: res.finalScore }) : "no result");
+    const feats = res && res.aiResult && res.aiResult.explanation ? res.aiResult.explanation.features : [];
+    check("AI explanation lists parts of this address", feats.length > 0 && feats.every((f) => typeof f.effect_points === "number"),
+      JSON.stringify(feats.slice(0, 2)));
+    const details = await context.newPage();
+    await details.goto(`chrome-extension://${extId}/history.html?details=${encodeURIComponent(portal)}`, { waitUntil: "load" });
+    await sleep(1200);
+    const modalText = await details.locator("#modalBody").innerText().catch(() => "");
+    check("Scan details show the AI analysis", /AI analysis of this website/.test(modalText) && /pts/.test(modalText),
+      modalText.replace(/\s+/g, " ").slice(0, 160));
+    await details.close();
+    await pg.close();
+  }
+
   // Flow 5: extension pages load without script errors.
   for (const name of ["popup.html", "options.html", "history.html", "dashboard.html"]) {
     const ext = await context.newPage();

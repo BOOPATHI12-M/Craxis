@@ -213,3 +213,28 @@ test("settings.normalize validates and repairs values", () => {
   assert.equal(custom.backendUrl, "http://localhost:8000");
   assert.equal(custom.suspiciousThreshold, 25);
 });
+
+test("isLoopbackHost covers only this computer, not private networks", () => {
+  for (const h of ["localhost", "127.0.0.1", "127.5.4.3", "[::1]", "app.localhost"]) {
+    assert.equal(Scoring.isLoopbackHost(h), true, h);
+  }
+  for (const h of ["172.16.0.1", "192.168.1.5", "10.0.0.1", "8.8.8.8", "example.com", ""]) {
+    assert.equal(Scoring.isLoopbackHost(h), false, h);
+  }
+});
+
+test("advisory AI result is shown but not counted in the score", () => {
+  const u = { score: 50 };
+  const pg = { score: 35 };
+  const ai = { ai_risk_score: 71, prediction: "PHISHING" };
+  const counted = Scoring.calculateCombinedScore("x", u, pg, ai);
+  const advisory = Scoring.calculateCombinedScore("x", u, pg, ai, { aiAdvisory: true });
+  assert.equal(advisory.hasAIData, true, "the AI answer is still available to display");
+  assert.equal(advisory.aiAdvisory, true);
+  assert.equal(advisory.aiContrib, 0);
+  assert.equal(advisory.finalScore, Math.round(50 * 0.6 + 35 * 0.4), "weights fall back to URL and page");
+  assert.ok(counted.finalScore > advisory.finalScore);
+  assert.notEqual(advisory.statusLevel, "DANGEROUS");
+  const urlAi = Scoring.calculateCombinedScore("x", { score: 50 }, null, ai, { aiAdvisory: true });
+  assert.equal(urlAi.finalScore, 50, "URL only when the AI is advisory and there is no page data");
+});

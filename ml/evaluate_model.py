@@ -1,7 +1,7 @@
 """Evaluate the saved model on the held-out, domain-grouped test split.
 
 Writes ml/evaluation_results.json (served by Flask and used by the test-pages
-evaluation dashboard) and ml/MODEL-EVALUATION-REPORT.md.
+evaluation dashboard). Pass --report to also write a Markdown report.
 
 Usage:
     python ml/evaluate_model.py [--dataset path/to/file.csv]
@@ -82,6 +82,8 @@ def legacy_comparison(X_test, y_test):
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", help="Path to a url,label CSV.")
+    parser.add_argument("--report", action="store_true",
+                        help="Also write ml/MODEL-EVALUATION-REPORT.md (off by default).")
     args = parser.parse_args(argv)
 
     if not MODEL_PATH.exists():
@@ -144,77 +146,78 @@ def main(argv=None) -> int:
     JSON_PATH.write_text(json.dumps(result, indent=2), encoding="utf-8")
     print(f"Wrote {JSON_PATH}")
 
-    lines = [
-        "# Craxis: Model Evaluation Report",
-        "",
-        "## Summary",
-        "",
-        f"- **Algorithm:** {algorithm}",
-        f"- **Model version:** {version}",
-        f"- **Dataset:** `{dataset_path.name}` ({len(df)} unique URLs)",
-        f"- **Method:** 80/20 split grouped by domain, so no site is in both sets",
-        f"- **Generated:** {result['generated_at']}",
-        "",
-        "## Held-out metrics",
-        "",
-        "| Metric | Value |",
-        "| :--- | ---: |",
-        f"| Accuracy | {m['accuracy']:.4f} |",
-        f"| Precision | {m['precision']:.4f} |",
-        f"| Recall | {m['recall']:.4f} |",
-        f"| F1 score | {m['f1_score']:.4f} |",
-        f"| ROC-AUC | {m['roc_auc']} |",
-        f"| False-positive rate | {m['false_positive_rate']:.4f} |",
-        f"| Recall at 1% false-positive rate | {m['recall_at_1pct_fpr']} |",
-        "",
-        "## Confusion matrix",
-        "",
-        "| | Predicted legitimate | Predicted phishing |",
-        "| :--- | ---: | ---: |",
-        f"| **Actual legitimate** | {cm['true_negative']} | {cm['false_positive']} |",
-        f"| **Actual phishing** | {cm['false_negative']} | {cm['true_positive']} |",
-        "",
-        "## Samples",
-        "",
-        "| Class | Whole dataset | Test split |",
-        "| :--- | ---: | ---: |",
-        f"| Legitimate | {total_legit} | {test_legit} |",
-        f"| Phishing | {total_phish} | {test_phish} |",
-        "",
-    ]
-    if result["cross_validation"]:
-        lines += ["## Model comparison (5-fold grouped cross-validation)", "", "| Model | Mean ROC-AUC | Std |", "| :--- | ---: | ---: |"]
-        for name, s in result["cross_validation"].items():
-            lines.append(f"| {name} | {s['mean_auc']:.4f} | {s['std_auc']:.4f} |")
-        lines.append("")
-    if legacy:
-        lm = legacy["metrics"]
-        lines += [
-            "## Comparison with the previous model",
+    if args.report:
+        lines = [
+            "# Craxis: Model Evaluation Report",
             "",
-            "| Metric | Previous (20 features) | Current |",
+            "## Summary",
+            "",
+            f"- **Algorithm:** {algorithm}",
+            f"- **Model version:** {version}",
+            f"- **Dataset:** `{dataset_path.name}` ({len(df)} unique URLs)",
+            f"- **Method:** 80/20 split grouped by domain, so no site is in both sets",
+            f"- **Generated:** {result['generated_at']}",
+            "",
+            "## Held-out metrics",
+            "",
+            "| Metric | Value |",
+            "| :--- | ---: |",
+            f"| Accuracy | {m['accuracy']:.4f} |",
+            f"| Precision | {m['precision']:.4f} |",
+            f"| Recall | {m['recall']:.4f} |",
+            f"| F1 score | {m['f1_score']:.4f} |",
+            f"| ROC-AUC | {m['roc_auc']} |",
+            f"| False-positive rate | {m['false_positive_rate']:.4f} |",
+            f"| Recall at 1% false-positive rate | {m['recall_at_1pct_fpr']} |",
+            "",
+            "## Confusion matrix",
+            "",
+            "| | Predicted legitimate | Predicted phishing |",
             "| :--- | ---: | ---: |",
-            f"| Accuracy | {lm['accuracy']:.4f} | {m['accuracy']:.4f} |",
-            f"| Recall | {lm['recall']:.4f} | {m['recall']:.4f} |",
-            f"| ROC-AUC | {lm['roc_auc']} | {m['roc_auc']} |",
-            f"| False-positive rate | {lm['false_positive_rate']:.4f} | {m['false_positive_rate']:.4f} |",
+            f"| **Actual legitimate** | {cm['true_negative']} | {cm['false_positive']} |",
+            f"| **Actual phishing** | {cm['false_negative']} | {cm['true_positive']} |",
+            "",
+            "## Samples",
+            "",
+            "| Class | Whole dataset | Test split |",
+            "| :--- | ---: | ---: |",
+            f"| Legitimate | {total_legit} | {test_legit} |",
+            f"| Phishing | {total_phish} | {test_phish} |",
             "",
         ]
-    lines += ["## Top features", ""]
-    for rank, feat in enumerate(top_features[:8], 1):
-        lines.append(f"{rank}. `{feat['name']}`: {feat['importance'] * 100:.1f}%")
-    lines += [
-        "",
-        "## Limitations",
-        "",
-        "1. Phishing URLs come from one public feed (PhishTank). Other feeds may behave differently.",
-        "2. Legitimate URLs use real Tranco domains with synthetic paths, so real-world deep links may score differently.",
-        "3. Phishing patterns change quickly. Retrain on fresh data regularly.",
-        "4. The model sees only URL features. Page content is scored separately by the extension.",
-        "",
-    ]
-    REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")
-    print(f"Wrote {REPORT_PATH}")
+        if result["cross_validation"]:
+            lines += ["## Model comparison (5-fold grouped cross-validation)", "", "| Model | Mean ROC-AUC | Std |", "| :--- | ---: | ---: |"]
+            for name, s in result["cross_validation"].items():
+                lines.append(f"| {name} | {s['mean_auc']:.4f} | {s['std_auc']:.4f} |")
+            lines.append("")
+        if legacy:
+            lm = legacy["metrics"]
+            lines += [
+                "## Comparison with the previous model",
+                "",
+                "| Metric | Previous (20 features) | Current |",
+                "| :--- | ---: | ---: |",
+                f"| Accuracy | {lm['accuracy']:.4f} | {m['accuracy']:.4f} |",
+                f"| Recall | {lm['recall']:.4f} | {m['recall']:.4f} |",
+                f"| ROC-AUC | {lm['roc_auc']} | {m['roc_auc']} |",
+                f"| False-positive rate | {lm['false_positive_rate']:.4f} | {m['false_positive_rate']:.4f} |",
+                "",
+            ]
+        lines += ["## Top features", ""]
+        for rank, feat in enumerate(top_features[:8], 1):
+            lines.append(f"{rank}. `{feat['name']}`: {feat['importance'] * 100:.1f}%")
+        lines += [
+            "",
+            "## Limitations",
+            "",
+            "1. Phishing URLs come from one public feed (PhishTank). Other feeds may behave differently.",
+            "2. Legitimate URLs use real Tranco domains with synthetic paths, so real-world deep links may score differently.",
+            "3. Phishing patterns change quickly. Retrain on fresh data regularly.",
+            "4. The model sees only URL features. Page content is scored separately by the extension.",
+            "",
+        ]
+        REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")
+        print(f"Wrote {REPORT_PATH}")
     return 0
 
 

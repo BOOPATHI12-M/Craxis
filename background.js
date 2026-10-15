@@ -150,8 +150,10 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
     if (trust.trusted) return;
 
     const isLocal = Scoring.isLoopbackHost(hostOf(details.url));
+    const isPrivate = !isLocal && Scoring.isLocalHost(hostOf(details.url));
     let urlResult = Scoring.analyzeURL(details.url);
-    const aiResult = isLocal ? null : await Api.predict(details.url, settings, 2500);
+    // Blocking never depends on the AI for private network addresses, so skip the call.
+    const aiResult = isLocal || isPrivate ? null : await Api.predict(details.url, settings, 2500);
     if (aiResult && aiResult.intel) urlResult = Scoring.applyIntel(urlResult, aiResult.intel);
 
     const combined = Scoring.calculateCombinedScore(details.url, urlResult, null, aiResult, {
@@ -203,6 +205,7 @@ async function runAutomaticScan(tabId, url) {
     // Only the user's own machine (localhost, 127.x.x.x) is skipped. Private network
     // sites such as a college portal on 172.16.x.x are analysed like any other site.
     const isLocal = Scoring.isLoopbackHost(hostOf(url));
+    const isPrivate = !isLocal && Scoring.isLocalHost(hostOf(url));
     let urlResult = Scoring.analyzeURL(url);
     const [pageResult, aiResult] = await Promise.all([
       requestPageDOM(tabId),
@@ -213,7 +216,8 @@ async function runAutomaticScan(tabId, url) {
     const combined = Scoring.calculateCombinedScore(url, urlResult, pageResult, aiResult, {
       thresholds: Settings.thresholds(settings),
       trust,
-      aiSkipped: isLocal
+      aiSkipped: isLocal,
+      aiAdvisory: isPrivate
     });
 
     await setTabScan(tabId, {
@@ -380,6 +384,15 @@ function saveScanToHistory(result, type) {
         urlScore: result.urlScore ?? 0,
         webpageScore: result.webpageScore ?? 0,
         aiScore: result.aiScore ?? 0,
+        // Per-website AI explanation (numbers about the address only, never page content).
+        aiExplanation: result.aiResult && result.aiResult.explanation && Array.isArray(result.aiResult.explanation.features)
+          ? result.aiResult.explanation.features.slice(0, 6).map((f) => ({
+              label: f.label, value: f.value, typical: f.typical_legitimate, effect: f.effect_points
+            }))
+          : null,
+        aiProbability: result.aiResult && typeof result.aiResult.phishing_probability === "number"
+          ? result.aiResult.phishing_probability
+          : null,
         scanType: type,
         trusted: result.trusted || null
       };
