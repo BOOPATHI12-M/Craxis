@@ -3,46 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Phishing Guard — Security Scan History (Level 13)</title>
+  <title>AI Phishing Guard — Scan History</title>
   <link rel="stylesheet" href="history.css">
 </head>
 <body>
   <div class="container">
     <header class="header">
       <div class="header-main">
-        <div class="shield-icon">🛡️</div>
+        <div class="shield-icon" aria-hidden="true">🛡️</div>
         <div>
           <h1 class="title">AI Phishing Guard</h1>
           <p class="subtitle">Security Scan History & Recent Web Analysis</p>
         </div>
       </div>
-      <button id="closeBtn" class="nav-btn">← Back to Extension</button>
+      <button id="closeBtn" class="nav-btn" type="button">← Back to Extension</button>
     </header>
 
     <!-- Controls Bar: Filtering, Searching, & Clearing -->
     <div class="controls-bar">
-      <div class="filter-tabs">
-        <button class="tab-btn active" data-filter="ALL">All (<span id="countAll">0</span>)</button>
-        <button class="tab-btn" data-filter="SAFE">🟢 Safe (<span id="countSafe">0</span>)</button>
-        <button class="tab-btn" data-filter="SUSPICIOUS">🟠 Suspicious (<span id="countSuspicious">0</span>)</button>
-        <button class="tab-btn" data-filter="DANGEROUS">🔴 Dangerous (<span id="countDangerous">0</span>)</button>
+      <div class="filter-tabs" role="group" aria-label="Filter scans by result">
+        <button class="tab-btn active" data-filter="ALL" aria-pressed="true">All (<span id="countAll">0</span>)</button>
+        <button class="tab-btn" data-filter="SAFE" aria-pressed="false">🟢 Safe (<span id="countSafe">0</span>)</button>
+        <button class="tab-btn" data-filter="SUSPICIOUS" aria-pressed="false">🟠 Suspicious (<span id="countSuspicious">0</span>)</button>
+        <button class="tab-btn" data-filter="DANGEROUS" aria-pressed="false">🔴 Dangerous (<span id="countDangerous">0</span>)</button>
       </div>
 
       <div class="search-actions">
-        <input type="text" id="searchInput" class="search-input" placeholder="Search scanned websites by domain or URL...">
-        <button id="clearBtn" class="clear-btn">🗑️ Clear History</button>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search scanned websites by domain or URL..." aria-label="Search scan history">
+        <button id="clearBtn" class="clear-btn" type="button">🗑️ Clear History</button>
       </div>
     </div>
 
     <!-- Main Scan Cards Container -->
     <main>
-      <div id="historyGrid" class="history-grid">
+      <div id="historyGrid" class="history-grid" aria-live="polite">
         <!-- Rendered dynamically by history.js -->
       </div>
 
       <!-- Empty State -->
       <div id="emptyState" class="empty-state">
-        <div class="empty-icon">🛡️</div>
+        <div class="empty-icon" aria-hidden="true">🛡️</div>
         <h2>No Security Scans Yet</h2>
         <p>Websites you visit or manually scan will appear here automatically.</p>
       </div>
@@ -56,10 +56,10 @@
 
   <!-- Detail Modal -->
   <div id="detailModal" class="modal-backdrop hidden">
-    <div class="modal-card">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-header">
         <h3 id="modalTitle" class="modal-title">Security Report Details</h3>
-        <button id="closeModalBtn" class="close-icon">&times;</button>
+        <button id="closeModalBtn" class="close-icon" type="button" aria-label="Close details">&times;</button>
       </div>
       <div id="modalBody" class="modal-body">
         <!-- Filled by history.js -->
@@ -69,8 +69,8 @@
 
   <!-- Clear Confirmation Modal -->
   <div id="clearModal" class="modal-backdrop hidden">
-    <div class="modal-card confirm-modal">
-      <h3>Clear Security History?</h3>
+    <div class="modal-card confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="clearTitle">
+      <h3 id="clearTitle">Clear Security History?</h3>
       <p>Are you sure you want to clear all saved website security scan entries? This action cannot be undone.</p>
       <div class="modal-actions">
         <button id="cancelClearBtn" class="modal-btn secondary">Cancel</button>

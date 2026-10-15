@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Phishing Guard — Security Intelligence Dashboard (Level 14)</title>
+  <title>AI Phishing Guard — Dashboard</title>
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
@@ -11,21 +11,21 @@
     <!-- Header -->
     <header class="header">
       <div class="header-title">
-        <div class="shield-icon">📊</div>
+        <div class="shield-icon" aria-hidden="true">📊</div>
         <div>
           <h1 class="title">AI Phishing Guard</h1>
-          <p class="subtitle">Security Intelligence Dashboard & Real-Time Overview (Level 14)</p>
+          <p class="subtitle">Security overview of your scans</p>
         </div>
       </div>
       <div class="nav-btns">
         <a href="history.html" class="nav-btn">🕘 Scan History</a>
         <a href="test-pages/model-evaluation.html" class="nav-btn secondary">📊 ML Evaluation</a>
-        <button id="closeBtn" class="nav-btn">← Close</button>
+        <button id="closeBtn" class="nav-btn" type="button">← Close</button>
       </div>
     </header>
 
     <!-- Top Summary Metric Cards -->
-    <div id="summaryCardsGrid" class="summary-grid">
+    <div id="summaryCardsGrid" class="summary-grid" role="region" aria-label="Scan totals">
       <div class="card stat-card">
         <span id="statTotalScans" class="stat-value">0</span>
         <span class="stat-label">Total Scans</span>
@@ -98,7 +98,7 @@
             </div>
           </div>
           <p class="note-text">
-            Based on Random Forest ML model (Version 2.0) predictions recorded in local history.
+            Based on AI model predictions recorded in local history.
           </p>
         </div>
       </div>
@@ -156,8 +156,8 @@
     </div>
 
     <!-- Empty State Container -->
-    <div id="emptyState" class="empty-state hidden">
-      <div class="empty-icon">🛡️</div>
+    <div id="emptyState" class="empty-state hidden" role="status">
+      <div class="empty-icon" aria-hidden="true">🛡️</div>
       <h2>No Security Analysis Data Yet</h2>
       <p>Visit websites and run AI Phishing Guard scans to populate this Security Intelligence Dashboard.</p>
     </div>

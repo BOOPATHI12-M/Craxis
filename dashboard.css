@@ -188,7 +188,7 @@ body {
 }
 
 .trend-lbl {
-  font-size: 9px;
+  font-size: 11px;
   color: #94a3b8;
 }
 
@@ -213,7 +213,7 @@ body {
 .ai-stat-val { font-size: 1.5rem; font-weight: 700; }
 .ai-stat-lbl { font-size: 0.7rem; color: #94a3b8; font-weight: 700; }
 
-.note-text { font-size: 0.8rem; color: #64748b; line-height: 1.3; }
+.note-text { font-size: 0.8rem; color: #94a3b8; line-height: 1.3; }
 
 /* Indicators List */
 .indicators-list {
@@ -270,7 +270,7 @@ body {
   border-radius: 8px;
   padding: 1rem;
   font-size: 0.8rem;
-  color: #64748b;
+  color: #94a3b8;
   line-height: 1.4;
 }
 
@@ -290,3 +290,19 @@ body {
 .empty-icon { font-size: 3rem; }
 .empty-state h2 { font-size: 1.25rem; color: #f8fafc; }
 .empty-state p { font-size: 0.85rem; color: #94a3b8; }
+
+/* Keyboard focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

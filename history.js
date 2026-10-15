@@ -248,8 +248,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   tabBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      tabBtns.forEach((b) => b.classList.remove("active"));
+      tabBtns.forEach((b) => {
+        b.classList.remove("active");
+        b.setAttribute("aria-pressed", "false");
+      });
       btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
       currentFilter = btn.getAttribute("data-filter") || "ALL";
       renderGrid();
     });

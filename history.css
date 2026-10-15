@@ -163,7 +163,7 @@ header {
   font-size: 0.85rem;
 }
 
-.time-stamp { font-size: 0.75rem; color: #64748b; }
+.time-stamp { font-size: 0.75rem; color: #94a3b8; }
 
 .detail-btn {
   background: #0284c7;
@@ -203,7 +203,7 @@ header {
   border-radius: 8px;
   padding: 1rem;
   font-size: 0.8rem;
-  color: #64748b;
+  color: #94a3b8;
   line-height: 1.4;
 }
 
@@ -249,3 +249,19 @@ header {
 .modal-btn.secondary:hover { background: #475569; }
 .modal-btn.danger { background: #dc2626; color: white; }
 .modal-btn.danger:hover { background: #b91c1c; }
+
+/* Keyboard focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

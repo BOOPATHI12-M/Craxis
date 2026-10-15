@@ -9,7 +9,7 @@
 <body>
   <main class="page">
     <header>
-      <h1>🛡️ AI Phishing Guard Settings</h1>
+      <h1><span aria-hidden="true">🛡️</span> AI Phishing Guard Settings</h1>
       <p class="muted">Changes are saved to your browser profile and apply immediately.</p>
     </header>
 
@@ -59,10 +59,10 @@
       <h2>Trusted sites</h2>
       <p class="muted">Sites listed here are never blocked and their risk score is capped. Subdomains are included.</p>
       <div class="inline">
-        <input type="text" id="allowlistInput" placeholder="example.com" autocomplete="off">
+        <input type="text" id="allowlistInput" placeholder="example.com" autocomplete="off" aria-label="Site to trust">
         <button id="addAllowBtn" class="btn secondary" type="button">Add</button>
       </div>
-      <ul id="allowlist" class="allowlist"></ul>
+      <ul id="allowlist" class="allowlist" aria-label="Trusted sites"></ul>
     </section>
 
     <div class="footer">
