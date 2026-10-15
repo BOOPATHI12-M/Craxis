@@ -32,7 +32,7 @@
     </ul>
 
     <!-- Form submitting to an external domain -->
-    <form action="https://different-domain-test.invalid/login-handler" method="POST" onsubmit="event.preventDefault(); alert('Test multi-indicator submission prevented.');">
+    <form action="https://different-domain-test.invalid/login-handler" method="POST" data-test-message="Test multi-indicator submission prevented.">
       <div class="form-group">
         <label for="username">Username / Account ID:</label>
         <input type="text" id="username" name="username" placeholder="user@example.test">
@@ -53,5 +53,6 @@
     <p style="margin-top: 1rem;">Expected Result: High Risk Score (Accumulated Indicators Classification: <strong>DANGEROUS</strong>)</p>
     <p>Return to <a href="index.html">Local Test Center Dashboard</a>.</p>
   </div>
+  <script src="no-submit.js"></script>
 </body>
 </html>

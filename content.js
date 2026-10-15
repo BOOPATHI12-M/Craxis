@@ -282,8 +282,63 @@ function checkIsHiddenLink(element) {
   return false;
 }
 
+const CRAXIS_LOGO_SVG =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="26" height="26" aria-hidden="true">' +
+  '<defs><linearGradient id="cxg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#2ee6a6"/></linearGradient></defs>' +
+  '<path d="M32 3 57 12v20c0 15-11 25-25 29C18 57 7 47 7 32V12z" fill="url(#cxg)"/>' +
+  '<path d="M32 8 52 15v17c0 12-8 20-20 24C20 52 12 44 12 32V15z" fill="#0b0b1a"/>' +
+  '<path d="M40 23a12.5 12.5 0 1 0 0 18" fill="none" stroke="#f5f3ff" stroke-width="5.5" stroke-linecap="round"/>' +
+  '<path d="M41 26.5l10 11M51 26.5l-10 11" fill="none" stroke="#2ee6a6" stroke-width="5" stroke-linecap="round"/></svg>';
+
+const CRAXIS_BANNER_CSS = `
+  :host { all: initial; }
+  * { box-sizing: border-box; margin: 0; padding: 0; text-align: left; }
+  .wrap {
+    position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+    width: min(860px, calc(100vw - 24px)); z-index: 2147483647;
+    font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #f5f3ff; background: #0b0b1a; border: 1px solid #2a2a47;
+    border-left: 5px solid var(--accent); border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.55); padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .wrap.suspicious { --accent: #f59e0b; --tint: #fde68a; --pill: #451a03; }
+  .wrap.dangerous  { --accent: #ef4444; --tint: #fecaca; --pill: #450a0a; }
+  .top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: .02em; }
+  .pill { background: var(--pill); color: var(--tint); border: 1px solid var(--accent);
+    border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
+  .score { margin-left: auto; color: #c4b5fd; font-size: 12px; font-weight: 600; }
+  ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 6px 16px; }
+  li { position: relative; padding-left: 16px; color: #e2e8f0; font-size: 12.5px; }
+  li::before { content: ""; position: absolute; left: 2px; top: .55em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent); }
+  .rec { color: var(--tint); font-weight: 600; font-size: 12.5px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  button { font: inherit; font-size: 12px; font-weight: 600; border: 0; border-radius: 8px;
+    padding: 7px 12px; cursor: pointer; }
+  button:focus-visible { outline: 2px solid #a78bfa; outline-offset: 2px; }
+  .primary { background: #6d4aff; color: #fff; }
+  .danger  { background: #dc2626; color: #fff; }
+  .ghost   { background: #2a2a47; color: #e2e8f0; }
+  .safe { position: fixed; bottom: 16px; right: 16px; z-index: 2147483647; display: flex; align-items: center; gap: 8px;
+    font: 600 12px/1 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #6ee7b7; background: #0b0b1a;
+    border: 1px solid #10b981; border-radius: 999px; padding: 6px 12px 6px 8px; opacity: .92;
+    box-shadow: 0 4px 12px rgba(0,0,0,.4); cursor: default; transition: opacity .2s; }
+  .safe svg { width: 18px; height: 18px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+`;
+
+function craxisEl(tag, className, text) {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (text !== undefined) el.textContent = text;
+  return el;
+}
+
 /**
- * Renders Level 12 Real-Time Warning UI (SAFE Badge, SUSPICIOUS Banner, or DANGEROUS Overlay).
+ * Renders the in-page Craxis warning UI (SAFE badge, SUSPICIOUS or DANGEROUS banner).
+ * Drawn inside a shadow root so the host page's CSS cannot distort it.
  * @param {Object} result - Scanned security result
  */
 function renderWarningUI(result) {
@@ -293,7 +348,6 @@ function renderWarningUI(result) {
     return;
   }
 
-  // Remove existing root if present
   const existingRoot = document.getElementById("aiphish-guard-root");
   if (existingRoot) {
     existingRoot.remove();
@@ -305,232 +359,93 @@ function renderWarningUI(result) {
   const isDangerous = level === "DANGEROUS";
   const isSafe = level === "SAFE";
 
-  // Root Container
-  const root = document.createElement("div");
-  root.id = "aiphish-guard-root";
-  root.style.cssText = `
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 2147483647 !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    box-sizing: border-box !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  `;
+  const host = document.createElement("div");
+  host.id = "aiphish-guard-root";
+  const shadow = host.attachShadow({ mode: "open" });
+  const style = document.createElement("style");
+  style.textContent = CRAXIS_BANNER_CSS;
+  shadow.appendChild(style);
 
-  // CASE 1: SAFE Website (Small non-intrusive indicator)
   if (isSafe) {
-    const safeBadge = document.createElement("div");
-    safeBadge.style.cssText = `
-      position: fixed !important;
-      bottom: 16px !important;
-      right: 16px !important;
-      background-color: #0b0b1a !important;
-      color: #34d399 !important;
-      border: 1px solid #10b981 !important;
-      border-radius: 20px !important;
-      padding: 6px 14px !important;
-      font-size: 11px !important;
-      font-weight: 600 !important;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 6px !important;
-      cursor: pointer !important;
-      opacity: 0.9 !important;
-      transition: opacity 0.2s ease !important;
-    `;
-    safeBadge.title = "Craxis: SAFE website";
-    const badgeIcon = document.createElement("span");
-    badgeIcon.textContent = "🛡️";
-    const badgeText = document.createElement("span");
-    badgeText.textContent = result.trusted
-      ? `SAFE (trusted, ${finalScore}/100)`
-      : `SAFE (${finalScore}/100)`;
-    safeBadge.appendChild(badgeIcon);
-    safeBadge.appendChild(badgeText);
-    safeBadge.onclick = () => {
-      alert("Craxis: This website is classified as SAFE with low risk indicators.");
-    };
-
-    root.appendChild(safeBadge);
-    document.body.appendChild(root);
-
-    // Auto-fade safe badge after 6 seconds to avoid clutter
+    const badge = craxisEl("div", "safe");
+    badge.title = "Craxis: SAFE website";
+    badge.insertAdjacentHTML("afterbegin", CRAXIS_LOGO_SVG);
+    badge.appendChild(
+      craxisEl("span", "", result.trusted ? "Safe · trusted (" + finalScore + "/100)" : "Safe (" + finalScore + "/100)")
+    );
+    shadow.appendChild(badge);
+    document.body.appendChild(host);
+    // Fade the safe badge after 6 seconds to avoid clutter
     setTimeout(() => {
-      if (safeBadge && safeBadge.parentNode) {
-        safeBadge.style.opacity = "0.3";
-      }
+      badge.style.opacity = "0.3";
     }, 6000);
     return;
   }
 
-  // CASE 2 & 3: SUSPICIOUS (Banner) or DANGEROUS (Overlay Banner)
-  const container = document.createElement("div");
-  container.style.cssText = `
-    background-color: #0b0b1a !important;
-    color: #f8fafc !important;
-    border-bottom: 3px solid ${isDangerous ? "#ef4444" : "#f59e0b"} !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
-    padding: 14px 18px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
-    max-width: 100% !important;
-  `;
+  const wrap = craxisEl("div", "wrap " + (isDangerous ? "dangerous" : "suspicious"));
+  wrap.setAttribute("role", "alert");
 
-  // Header Row
-  const headerRow = document.createElement("div");
-  headerRow.style.cssText = "display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 12px !important;";
+  const top = craxisEl("div", "top");
+  const brand = craxisEl("div", "brand");
+  brand.insertAdjacentHTML("afterbegin", CRAXIS_LOGO_SVG);
+  brand.appendChild(craxisEl("span", "", "Craxis"));
+  top.appendChild(brand);
+  top.appendChild(craxisEl("span", "pill", isDangerous ? "High-risk website" : "Suspicious website"));
+  top.appendChild(craxisEl("span", "score", "Risk score " + finalScore + "/100"));
+  wrap.appendChild(top);
 
-  const titleGroup = document.createElement("div");
-  titleGroup.style.cssText = "display: flex; align-items: center; gap: 8px;";
+  const reasons = Scoring ? Scoring.collectReasons(result) : [];
+  const list = craxisEl("ul");
+  (reasons.length ? reasons.slice(0, 4) : ["Suspicious risk indicators detected."]).forEach((r) => {
+    list.appendChild(craxisEl("li", "", String(r)));
+  });
+  wrap.appendChild(list);
 
-  const iconSpan = document.createElement("span");
-  iconSpan.style.cssText = "font-size: 20px;";
-  iconSpan.textContent = isDangerous ? "🛑" : "⚠️";
+  wrap.appendChild(
+    craxisEl(
+      "p",
+      "rec",
+      isDangerous
+        ? "Avoid entering passwords, OTPs, payment information, or sensitive credentials."
+        : "Verify the website address in your address bar before proceeding."
+    )
+  );
 
-  const titleText = document.createElement("strong");
-  titleText.style.cssText = `font-size: 14px; color: ${isDangerous ? "#fca5a5" : "#fde047"}; letter-spacing: 0.5px;`;
-  titleText.textContent = isDangerous
-    ? "AI PHISHING GUARD — HIGH-RISK WEBSITE"
-    : "AI PHISHING GUARD — SUSPICIOUS WEBSITE";
-
-  const scoreBadge = document.createElement("span");
-  scoreBadge.style.cssText = `
-    background-color: ${isDangerous ? "#7f1d1d" : "#78350f"};
-    color: ${isDangerous ? "#fee2e2" : "#fef3c7"};
-    border: 1px solid ${isDangerous ? "#ef4444" : "#f59e0b"};
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 700;
-  `;
-  scoreBadge.textContent = `Risk Score: ${finalScore}/100`;
-
-  titleGroup.appendChild(iconSpan);
-  titleGroup.appendChild(titleText);
-  titleGroup.appendChild(scoreBadge);
-  headerRow.appendChild(titleGroup);
-
-  // Button Actions
-  const actionGroup = document.createElement("div");
-  actionGroup.style.cssText = "display: flex; gap: 8px; align-items: center;";
-
-  // Go Back Button (For Dangerous Sites)
+  const actions = craxisEl("div", "actions");
   if (isDangerous) {
-    const goBackBtn = document.createElement("button");
-    goBackBtn.style.cssText = `
-      background-color: #dc2626 !important;
-      color: #ffffff !important;
-      border: none !important;
-      padding: 6px 12px !important;
-      border-radius: 6px !important;
-      font-size: 12px !important;
-      font-weight: 700 !important;
-      cursor: pointer !important;
-    `;
-    goBackBtn.textContent = "Go Back";
-    goBackBtn.onclick = () => {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        alert("Cannot go back: No previous page in browsing history for this tab.");
-      }
+    const back = craxisEl("button", "danger", "Go back");
+    back.type = "button";
+    back.onclick = () => {
+      if (window.history.length > 1) window.history.back();
+      else alert("Cannot go back: No previous page in browsing history for this tab.");
     };
-    actionGroup.appendChild(goBackBtn);
+    actions.appendChild(back);
   }
-
-  // View Security Details Button
-  const viewDetailsBtn = document.createElement("button");
-  viewDetailsBtn.style.cssText = `
-    background-color: #6d4aff !important;
-    color: #ffffff !important;
-    border: none !important;
-    padding: 6px 12px !important;
-    border-radius: 6px !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-  `;
-  viewDetailsBtn.textContent = "View Security Details";
-  viewDetailsBtn.onclick = () => {
-    alert("Click the Craxis extension icon in your browser toolbar to view the complete explainable security report.");
+  const details = craxisEl("button", "primary", "View details");
+  details.type = "button";
+  details.onclick = () => {
+    // A page cannot open the toolbar popup, so ask the background to open the
+    // scan's detail view in a new tab.
+    try {
+      chrome.runtime.sendMessage({ action: "OPEN_DETAILS" }, (response) => {
+        if (chrome.runtime.lastError || !response || !response.success) {
+          alert("Could not open the report. Click the Craxis icon in your browser toolbar instead.");
+        }
+      });
+    } catch (e) {
+      alert("Could not open the report. Click the Craxis icon in your browser toolbar instead.");
+    }
   };
-
-  // Continue Anyway Button
-  const continueBtn = document.createElement("button");
-  continueBtn.style.cssText = `
-    background-color: #2a2a47 !important;
-    color: #cbd5e1 !important;
-    border: none !important;
-    padding: 6px 12px !important;
-    border-radius: 6px !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-  `;
-  continueBtn.textContent = "Continue Anyway";
-  continueBtn.onclick = () => {
+  const cont = craxisEl("button", "ghost", "Continue anyway");
+  cont.type = "button";
+  cont.onclick = () => {
     sessionStorage.setItem(pageSessionKey, "true");
-    root.remove();
+    host.remove();
   };
+  actions.appendChild(details);
+  actions.appendChild(cont);
+  wrap.appendChild(actions);
 
-  actionGroup.appendChild(viewDetailsBtn);
-  actionGroup.appendChild(continueBtn);
-  headerRow.appendChild(actionGroup);
-  container.appendChild(headerRow);
-
-  // Reasons List & Recommendation Box
-  const detailBox = document.createElement("div");
-  detailBox.style.cssText = `
-    font-size: 12px !important;
-    color: #cbd5e1 !important;
-    background-color: #0b0b1a !important;
-    border: 1px solid #2a2a47 !important;
-    padding: 10px 12px !important;
-    border-radius: 6px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 6px !important;
-  `;
-
-  // Compile Reasons List
-  const reasonsList = document.createElement("ul");
-  reasonsList.style.cssText = "list-style-type: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px;";
-
-  const detectedReasons = Scoring ? Scoring.collectReasons(result) : [];
-
-  if (detectedReasons.length > 0) {
-    detectedReasons.slice(0, 4).forEach((reason) => {
-      const li = document.createElement("li");
-      li.style.cssText = "line-height: 1.35;";
-      const bullet = document.createElement("span");
-      bullet.style.cssText = "color: #f59e0b; font-weight: bold;";
-      bullet.textContent = "•";
-      li.appendChild(bullet);
-      li.appendChild(document.createTextNode(" " + reason));
-      reasonsList.appendChild(li);
-    });
-  } else {
-    const li = document.createElement("li");
-    li.textContent = "• Suspicious risk indicators detected.";
-    reasonsList.appendChild(li);
-  }
-
-  detailBox.appendChild(reasonsList);
-
-  // Recommended Action Text
-  const recText = document.createElement("p");
-  recText.style.cssText = `font-weight: 600; color: ${isDangerous ? "#fca5a5" : "#fde047"}; margin: 4px 0 0 0;`;
-  recText.textContent = isDangerous
-    ? "Recommended action: Avoid entering passwords, OTPs, payment information, or sensitive credentials."
-    : "Recommended action: Verify the website address in your address bar before proceeding.";
-  detailBox.appendChild(recText);
-
-  container.appendChild(detailBox);
-  root.appendChild(container);
-  document.body.appendChild(root);
+  shadow.appendChild(wrap);
+  document.body.appendChild(host);
 }

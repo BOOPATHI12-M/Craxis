@@ -25,7 +25,7 @@
     <p>Form action points to a fictional external test domain: <code>https://example.invalid/test</code>.</p>
     <p>Form submission is disabled with <code>event.preventDefault()</code>. No external request is sent.</p>
 
-    <form action="https://example.invalid/test" method="POST" onsubmit="event.preventDefault(); alert('Test external form submission prevented.');">
+    <form action="https://example.invalid/test" method="POST" data-test-message="Test external form submission prevented.">
       <div class="form-group">
         <label for="account_id">Test Account ID:</label>
         <input type="text" id="account_id" name="account_id" placeholder="ACC-12345">
@@ -36,5 +36,6 @@
     <p style="margin-top: 1rem;">Expected Indicator: <code>Form submits data to a different domain (+25)</code></p>
     <p>Return to <a href="index.html">Local Test Center Dashboard</a>.</p>
   </div>
+  <script src="no-submit.js"></script>
 </body>
 </html>

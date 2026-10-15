@@ -96,7 +96,7 @@
     <p>This test page combines multiple high-risk structural features to evaluate accumulated risk score calculations and automatic warning overlay triggers.</p>
 
     <!-- Synthetic Harmless Form with External Action Target -->
-    <form action="https://external-auth-server-test.invalid/verify-handler" method="POST" onsubmit="event.preventDefault(); alert('TC10 Test Form Submission Prevented Safely.');">
+    <form action="https://external-auth-server-test.invalid/verify-handler" method="POST" data-test-message="TC10 Test Form Submission Prevented Safely.">
       <div class="form-group">
         <label for="username">Synthetic Test Account ID / Username:</label>
         <input type="text" id="username" name="username" placeholder="test-user-12345" required>
@@ -143,5 +143,6 @@
     </p>
   </div>
 
+  <script src="no-submit.js"></script>
 </body>
 </html>

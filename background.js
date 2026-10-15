@@ -264,6 +264,18 @@ async function handleMessage(request, sender) {
       return { success: true };
     }
 
+    case "OPEN_DETAILS": {
+      // The address comes from the sender tab itself, never from the message.
+      const tabUrl = sender.tab && sender.tab.url;
+      if (!isScannableUrl(tabUrl)) return { success: false, error: "No scannable page." };
+      await chrome.tabs.create({
+        url: chrome.runtime.getURL("history.html") + "?details=" + encodeURIComponent(tabUrl),
+        index: typeof sender.tab.index === "number" ? sender.tab.index + 1 : undefined,
+        active: true
+      });
+      return { success: true };
+    }
+
     case "OPEN_HISTORY":
       await chrome.tabs.create({ url: "history.html" });
       return { success: true };

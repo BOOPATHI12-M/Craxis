@@ -55,7 +55,7 @@
     <header>
       <div>
         <h1 class="title">📈 Craxis — ML Model Evaluation</h1>
-        <p class="subtitle">Random Forest Phishing Detection Model Performance & Real Dataset Metrics (Level 11)</p>
+        <p class="subtitle">Random Forest Phishing Detection Model Performance & Real Dataset Metrics</p>
       </div>
       <a href="index.html" class="nav-btn">← Back to Test Center</a>
     </header>
@@ -162,91 +162,12 @@
       </ul>
     </div>
 
+    <p id="evalSourceNote" style="color:#94a3b8;font-size:0.85rem;"></p>
     <div class="disclaimer-box">
-      <strong>⚠️ Model Limitations & Disclaimer:</strong> Evaluation metrics are calculated from benchmark dataset splits (`phishing_urls.csv`). The Random Forest model evaluates numerical URL and structural DOM features. A high accuracy score indicates statistical model quality but does not constitute an absolute guarantee of safety for unanalyzed real-world pages.
+      <strong>⚠️ Model Limitations & Disclaimer:</strong> Evaluation metrics are calculated on a held-out split grouped by domain (see ml/MODEL-EVALUATION-REPORT.md). The Random Forest model evaluates numerical URL and structural DOM features. A high accuracy score indicates statistical model quality but does not constitute an absolute guarantee of safety for unanalyzed real-world pages.
     </div>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      let data = null;
-
-      // Attempt 1: Fetch live from Flask API endpoint /api/model-evaluation
-      try {
-        const resp = await fetch("http://127.0.0.1:5000/api/model-evaluation");
-        if (resp.ok) {
-          data = await resp.json();
-        }
-      } catch (e) {
-        console.warn("Flask evaluation API unavailable, attempting local JSON fallback...");
-      }
-
-      // Attempt 2: Local JSON file fallback (ml/evaluation_results.json)
-      if (!data) {
-        try {
-          const resp = await fetch("../ml/evaluation_results.json");
-          if (resp.ok) {
-            data = await resp.json();
-          }
-        } catch (e) {
-          console.warn("Local evaluation_results.json unreadable.");
-        }
-      }
-
-      if (!data) {
-        alert("Evaluation results unavailable. Please ensure Flask is running or evaluate_model.py has been executed.");
-        return;
-      }
-
-      renderEvaluationData(data);
-    });
-
-    function renderEvaluationData(data) {
-      const m = data.metrics || {};
-      const cm = data.confusion_matrix || {};
-
-      document.getElementById("metricAcc").textContent = (m.accuracy * 100).toFixed(1) + "%";
-      document.getElementById("metricPrec").textContent = (m.precision * 100).toFixed(1) + "%";
-      document.getElementById("metricRec").textContent = (m.recall * 100).toFixed(1) + "%";
-      document.getElementById("metricF1").textContent = (m.f1_score * 100).toFixed(1) + "%";
-
-      document.getElementById("cmTN").textContent = cm.true_negative ?? 0;
-      document.getElementById("cmFP").textContent = cm.false_positive ?? 0;
-      document.getElementById("cmFN").textContent = cm.false_negative ?? 0;
-      document.getElementById("cmTP").textContent = cm.true_positive ?? 0;
-
-      document.getElementById("infoModel").textContent = data.model || "Random Forest";
-      document.getElementById("infoVersion").textContent = data.version || "2.0 - Level 11";
-      document.getElementById("infoDataset").textContent = data.dataset || "phishing_urls.csv";
-      document.getElementById("infoTotal").textContent = data.total_samples ?? "-";
-      document.getElementById("infoTrain").textContent = data.training_samples ?? "-";
-      document.getElementById("infoTest").textContent = data.testing_samples ?? "-";
-
-      const dist = data.dataset_distribution || {};
-      document.getElementById("distLegit").textContent = dist.legitimate ?? "-";
-      document.getElementById("distPhish").textContent = dist.phishing ?? "-";
-
-      // Render Feature Importance Bars
-      const barsContainer = document.getElementById("featureBarsContainer");
-      if (barsContainer && data.top_features) {
-        barsContainer.innerHTML = "";
-        data.top_features.forEach((feat, idx) => {
-          const pct = (feat.importance * 100).toFixed(1);
-          const barItem = document.createElement("div");
-          barItem.className = "feature-bar-item";
-          barItem.innerHTML = `
-            <div class="feature-bar-header">
-              <span>${idx + 1}. <strong>${feat.name}</strong></span>
-              <span>${pct}%</span>
-            </div>
-            <div class="progress-track">
-              <div class="progress-fill" style="width: ${pct}%;"></div>
-            </div>
-          `;
-          barsContainer.appendChild(barItem);
-        });
-      }
-    }
-  </script>
+  <script src="model-evaluation.js"></script>
 </body>
 </html>

@@ -23,7 +23,7 @@
     <h2>Harmless Same-Origin Login Form</h2>
     <p>Form action submits locally to <code>action="#"</code>. Form submission is disabled with <code>event.preventDefault()</code>. No data is collected or sent anywhere.</p>
     
-    <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Test form submission prevented.');">
+    <form action="#" method="POST" data-test-message="Test form submission prevented.">
       <div class="form-group">
         <label for="username">Username / Email:</label>
         <input type="text" id="username" name="username" placeholder="user@example.local">
@@ -37,5 +37,6 @@
     
     <p style="margin-top: 1rem;">Return to <a href="index.html">Local Test Center Dashboard</a>.</p>
   </div>
+  <script src="no-submit.js"></script>
 </body>
 </html>

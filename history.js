@@ -81,7 +81,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateCounts();
       renderGrid();
+      openRequestedDetails();
     });
+  }
+
+  // history.html?details=<address> opens that scan's details automatically.
+  function openRequestedDetails() {
+    const wanted = new URLSearchParams(window.location.search).get("details");
+    if (!wanted) return;
+
+    let match = allHistory.find((h) => h.url === wanted);
+    if (!match) {
+      let host = "";
+      try {
+        host = new URL(wanted).hostname;
+      } catch (e) {
+        host = "";
+      }
+      match = allHistory.find((h) => host && h.hostname === host);
+      if (!match && host && searchInput) {
+        searchInput.value = host;
+        searchQuery = host;
+        renderGrid();
+      }
+    }
+    if (match) openDetailsModal(match);
   }
 
   function updateCounts() {

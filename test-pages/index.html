@@ -180,37 +180,6 @@
   </div>
 
   <script src="test-config.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const grid = document.getElementById("testGrid");
-      if (!grid || typeof TEST_SUITE_CONFIG === "undefined") {
-        return;
-      }
-
-      TEST_SUITE_CONFIG.forEach((test) => {
-        const targetUrl = test.file.startsWith("http")
-          ? test.file
-          : `http://127.0.0.1:5000${test.file.startsWith("/") ? test.file : "/" + test.file}`;
-
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <div>
-            <div class="category-tag">${test.category}</div>
-            <div class="card-header">
-              <span class="tc-name">${test.name}</span>
-              <span class="tc-badge">${test.id}</span>
-            </div>
-            <p class="description">${test.description}</p>
-          </div>
-          <div class="expected-box">
-            <span>Expected Indicator:</span> <strong>${test.expectedIndicator}</strong>
-          </div>
-          <a href="${targetUrl}" class="launch-btn" target="_blank">Launch Test Page (${test.id})</a>
-        `;
-        grid.appendChild(card);
-      });
-    });
-  </script>
+  <script src="index.js"></script>
 </body>
 </html>

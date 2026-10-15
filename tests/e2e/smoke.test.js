@@ -244,7 +244,8 @@ async function main() {
       const badge = await page
         .evaluate(() => {
           const root = document.getElementById("aiphish-guard-root");
-          return root ? root.innerText.replace(/\s+/g, " ").trim().slice(0, 90) : null;
+          const el = root ? (root.shadowRoot || root) : null;
+          return el ? el.textContent.replace(/\s+/g, " ").trim().slice(0, 90) : null;
         })
         .catch(() => null);
 
