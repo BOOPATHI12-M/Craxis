@@ -285,13 +285,14 @@ function setupTrustButton(tab) {
     return;
   }
 
+  const labelEl = btn.querySelector("span") || btn;
   const refreshLabel = () => {
     const trusted = Scoring.trustStatus(tab.url, popupSettings.userAllowlist);
     if (trusted.source === "user") {
-      btn.textContent = "Remove trust";
+      labelEl.textContent = "Remove trust";
       btn.dataset.mode = "untrust";
     } else {
-      btn.textContent = "Trust this site";
+      labelEl.textContent = "Trust site";
       btn.dataset.mode = "trust";
     }
   };
