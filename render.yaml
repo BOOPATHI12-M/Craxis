@@ -3,7 +3,7 @@ services:
   - type: web
     name: craxis-api
     runtime: docker
-    plan: starter          # free tier sleeps after 15 min idle; first request can take ~50 s
+    plan: free             # sleeps after 15 min idle; first request after sleep takes ~50 s
     healthCheckPath: /health
     autoDeployTrigger: commit
     envVars:
