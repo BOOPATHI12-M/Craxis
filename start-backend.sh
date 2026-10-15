@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Starts the AI Phishing Guard backend on macOS or Linux.
+# Starts the Craxis backend on macOS or Linux.
 # Usage: ./start-backend.sh [--intel]
 set -euo pipefail
 

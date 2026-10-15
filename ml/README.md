@@ -1,6 +1,6 @@
-# AI Phishing Guard: ML Backend
+# Craxis: ML Backend
 
-Flask API and model training code for the AI Phishing Guard extension.
+Flask API and model training code for the Craxis extension.
 
 ## Files
 

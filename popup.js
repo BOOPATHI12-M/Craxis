@@ -1,4 +1,4 @@
-// popup.js - AI Phishing Guard explainable security report (v1.1)
+// popup.js - Craxis explainable security report (v1.1)
 // Uses shared/scoring.js, shared/settings.js and shared/api.js for all scoring
 // logic so the popup always agrees with the background scanner.
 

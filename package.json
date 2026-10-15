@@ -2,7 +2,7 @@
   "name": "ai-phishing-guard",
   "version": "1.1.0",
   "private": true,
-  "description": "Test tooling for the AI Phishing Guard extension",
+  "description": "Test tooling for the Craxis extension",
   "scripts": {
     "test": "node --test tests/unit/scoring.test.js tests/unit/parity.test.js",
     "test:e2e": "node tests/e2e/smoke.test.js"

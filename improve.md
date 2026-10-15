@@ -1,4 +1,4 @@
-# AI Phishing Guard: Improvement Roadmap and Status
+# Craxis: Improvement Roadmap and Status
 
 This roadmap turns the weak points found in `extension.md` into phased work. Status below reflects what was built and verified on 2026-10-15 (version 1.1.0).
 

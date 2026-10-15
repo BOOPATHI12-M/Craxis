@@ -1,4 +1,4 @@
-// shared/scoring.js - AI Phishing Guard shared detection and scoring logic.
+// shared/scoring.js - Craxis shared detection and scoring logic.
 //
 // Single source of truth for URL rules, brand/lookalike detection, trust
 // handling, score fusion and classification. Loaded by:

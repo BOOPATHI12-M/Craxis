@@ -3,42 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Phishing Guard — Detection Evaluation Dashboard (Level 10)</title>
+  <title>Craxis — Detection Evaluation Dashboard (Level 10)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 2rem; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b0b1a; color: #f8fafc; padding: 2rem; }
     .container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
-    header { border-bottom: 2px solid #334155; padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
-    .title { font-size: 1.75rem; color: #38bdf8; font-weight: 700; }
+    header { border-bottom: 2px solid #2a2a47; padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .title { font-size: 1.75rem; color: #a78bfa; font-weight: 700; }
     .subtitle { font-size: 0.9rem; color: #94a3b8; margin-top: 0.25rem; }
-    .nav-btn { background: #334155; color: #f8fafc; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+    .nav-btn { background: #2a2a47; color: #f8fafc; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
     
     /* Stats Grid */
     .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-    .stat-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1rem; text-align: center; display: flex; flex-direction: column; gap: 0.25rem; }
-    .stat-value { font-size: 1.75rem; font-weight: 700; color: #38bdf8; }
+    .stat-card { background: #16162b; border: 1px solid #2a2a47; border-radius: 8px; padding: 1rem; text-align: center; display: flex; flex-direction: column; gap: 0.25rem; }
+    .stat-value { font-size: 1.75rem; font-weight: 700; color: #a78bfa; }
     .stat-label { font-size: 0.75rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
 
     /* Table Styles */
-    .table-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1rem; overflow-x: auto; }
+    .table-card { background: #16162b; border: 1px solid #2a2a47; border-radius: 8px; padding: 1rem; overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #334155; }
-    th { background: #0f172a; color: #38bdf8; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #2a2a47; }
+    th { background: #0b0b1a; color: #a78bfa; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
     
-    input, select { background: #0f172a; border: 1px solid #334155; color: #f8fafc; padding: 0.35rem 0.5rem; border-radius: 4px; font-size: 0.8rem; width: 100%; }
+    input, select { background: #0b0b1a; border: 1px solid #2a2a47; color: #f8fafc; padding: 0.35rem 0.5rem; border-radius: 4px; font-size: 0.8rem; width: 100%; }
     .pass-badge { background: #064e3b; color: #34d399; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem; display: inline-block; }
     .fail-badge { background: #7f1d1d; color: #fca5a5; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem; display: inline-block; }
     
     .actions { display: flex; justify-content: flex-end; gap: 1rem; }
-    .action-btn { background: #0284c7; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
-    .action-btn:hover { background: #0369a1; }
+    .action-btn { background: #6d4aff; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .action-btn:hover { background: #5b3be0; }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <div>
-        <h1 class="title">📊 AI Phishing Guard — Evaluation Dashboard</h1>
+        <h1 class="title">📊 Craxis — Evaluation Dashboard</h1>
         <p class="subtitle">Level 10 Security Detection Evaluation & Pass Rate Metrics</p>
       </div>
       <a href="index.html" class="nav-btn">← Back to Test Center</a>

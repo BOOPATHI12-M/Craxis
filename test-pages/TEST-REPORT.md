@@ -1,8 +1,8 @@
-# AI Phishing Guard — Security Test & Evaluation Report
+# Craxis — Security Test & Evaluation Report
 
 ## Test Environment
 - **Browser:** Google Chrome (Manifest V3)
-- **Extension:** AI Phishing Guard 1.1
+- **Extension:** Craxis 1.1
 - **Machine Learning Model:** see `ml/MODEL-EVALUATION-REPORT.md` (the model is not applied to local addresses)
 - **Backend Service:** Flask REST API (`http://127.0.0.1:5000`)
 - **Evaluation Type:** Safe Local Security Indicator & Classification Suite

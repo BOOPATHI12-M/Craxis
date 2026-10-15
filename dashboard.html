@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Phishing Guard — Dashboard</title>
+  <title>Craxis — Dashboard</title>
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
@@ -11,9 +11,9 @@
     <!-- Header -->
     <header class="header">
       <div class="header-title">
-        <div class="shield-icon" aria-hidden="true">📊</div>
+        <img src="icons/icon48.png" width="36" height="36" alt="" class="brand-logo">
         <div>
-          <h1 class="title">AI Phishing Guard</h1>
+          <h1 class="title">Craxis</h1>
           <p class="subtitle">Security overview of your scans</p>
         </div>
       </div>
@@ -92,13 +92,19 @@
               <span id="aiPhishCount" class="ai-stat-val text-dangerous">0</span>
               <span class="ai-stat-lbl">PHISHING</span>
             </div>
-            <div class="ai-stat-card">
+            <div class="ai-stat-card" title="Local addresses such as localhost and 127.0.0.1 are never sent to the AI model">
+              <span id="aiSkippedCount" class="ai-stat-val text-muted">0</span>
+              <span class="ai-stat-lbl">NOT APPLIED (LOCAL)</span>
+            </div>
+            <div class="ai-stat-card" title="The backend did not answer. Start it with: python ml/app.py">
               <span id="aiUnavailCount" class="ai-stat-val text-muted">0</span>
-              <span class="ai-stat-lbl">UNAVAILABLE</span>
+              <span class="ai-stat-lbl">BACKEND UNAVAILABLE</span>
             </div>
           </div>
           <p class="note-text">
-            Based on AI model predictions recorded in local history.
+            Based on AI model predictions recorded in local history. "Not applied" means the page was on a local
+            address, which the model is not used for. "Backend unavailable" means the AI server was not running
+            or did not answer. Start it with <strong>python ml/app.py</strong> and scan a public website.
           </p>
         </div>
       </div>
@@ -145,10 +151,10 @@
         <div class="card section-card">
           <h2 class="section-title">🕒 Data Freshness & Status</h2>
           <ul class="info-list">
-            <li>Dashboard last updated: <strong id="freshnessUpdated" style="color: #38bdf8;">-</strong></li>
-            <li>Latest scan recorded: <strong id="freshnessLatest" style="color: #38bdf8;">-</strong></li>
-            <li>Storage provider: <strong style="color: #38bdf8;">Chrome Local Extension Storage</strong></li>
-            <li>ML Evaluation Link: <a href="test-pages/model-evaluation.html" style="color: #38bdf8;">View Random Forest Metrics</a></li>
+            <li>Dashboard last updated: <strong id="freshnessUpdated" style="color: #a78bfa;">-</strong></li>
+            <li>Latest scan recorded: <strong id="freshnessLatest" style="color: #a78bfa;">-</strong></li>
+            <li>Storage provider: <strong style="color: #a78bfa;">Chrome Local Extension Storage</strong></li>
+            <li>ML Evaluation Link: <a href="test-pages/model-evaluation.html" style="color: #a78bfa;">View Random Forest Metrics</a></li>
           </ul>
         </div>
       </div>
@@ -159,7 +165,7 @@
     <div id="emptyState" class="empty-state hidden" role="status">
       <div class="empty-icon" aria-hidden="true">🛡️</div>
       <h2>No Security Analysis Data Yet</h2>
-      <p>Visit websites and run AI Phishing Guard scans to populate this Security Intelligence Dashboard.</p>
+      <p>Visit websites and run Craxis scans to populate this Security Intelligence Dashboard.</p>
     </div>
 
     <!-- Privacy Disclaimer Footer -->

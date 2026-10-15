@@ -1,4 +1,4 @@
-// shared/api.js - client for the local AI Phishing Guard Flask backend.
+// shared/api.js - client for the local Craxis Flask backend.
 // Every call is best-effort: failures resolve to null so the extension keeps
 // working with URL and page analysis when the backend is offline.
 

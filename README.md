@@ -1,6 +1,6 @@
-# 🛡️ AI Phishing Guard
+# 🛡️ Craxis
 
-**AI Phishing Guard** is a Manifest V3 Chrome extension that scores every web page you open for phishing risk. It combines URL rules, page-structure checks and a machine learning model served by a small local Flask API, then explains the result and can block dangerous pages.
+**Craxis** is a Manifest V3 Chrome extension that scores every web page you open for phishing risk. It combines URL rules, page-structure checks and a machine learning model served by a small local Flask API, then explains the result and can block dangerous pages.
 
 ---
 
@@ -93,7 +93,7 @@ The API listens on `http://127.0.0.1:5000`. The extension still works without it
 
 1. Open `chrome://extensions` and turn on **Developer mode**.
 2. Click **Load unpacked** and choose this folder.
-3. Pin **AI Phishing Guard**. After code changes press the reload icon on the extension card.
+3. Pin **Craxis**. After code changes press the reload icon on the extension card.
 
 ### 3. Try the test pages
 

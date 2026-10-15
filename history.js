@@ -1,4 +1,4 @@
-// history.js - AI Phishing Guard Security Scan History Dashboard (Level 15)
+// history.js - Craxis Security Scan History Dashboard (Level 15)
 
 document.addEventListener("DOMContentLoaded", () => {
   let allHistory = [];
@@ -59,7 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
       classification: classif,
       formattedTime: item.formattedTime || item.timestamp || "Recently Scanned",
       reasons: Array.isArray(item.reasons) ? item.reasons : ["No suspicious indicators detected."],
-      aiPrediction: item.aiPrediction || "N/A"
+      aiPrediction: item.aiPrediction || "N/A",
+      aiStatus: item.aiStatus || ""
     };
   }
 
@@ -182,6 +183,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return card;
   }
 
+  // Explains why a scan has no AI prediction instead of showing a bare "N/A".
+  function describeAI(item) {
+    const pred = (item.aiPrediction || "").toUpperCase();
+    if (pred === "LEGITIMATE" || pred === "PHISHING") return item.aiPrediction;
+    if (item.aiStatus === "skipped_local") return "Not applied (local address)";
+    if (item.aiStatus === "unavailable") return "Unavailable (AI server did not answer)";
+    let local = false;
+    try {
+      const h = new URL(item.url).hostname.toLowerCase();
+      local = h === "localhost" || /^127\./.test(h) || /^10\./.test(h) || /^192\.168\./.test(h);
+    } catch (e) {
+      local = false;
+    }
+    return local ? "Not applied (local address)" : "Unavailable (AI server did not answer)";
+  }
+
   function openDetailsModal(item) {
     modalBody.innerHTML = "";
 
@@ -190,18 +207,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const color = isDangerous ? "#fca5a5" : isSuspicious ? "#fde047" : "#34d399";
 
     const summaryBox = document.createElement("div");
-    summaryBox.style.cssText = "background: #0f172a; padding: 1rem; border-radius: 6px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 0.5rem;";
+    summaryBox.style.cssText = "background: #0b0b1a; padding: 1rem; border-radius: 6px; border: 1px solid #2a2a47; display: flex; flex-direction: column; gap: 0.5rem;";
     summaryBox.innerHTML = `
-      <div><span>Website URL:</span> <strong style="color: #38bdf8; word-break: break-all;">${escapeHTML(item.url)}</strong></div>
+      <div><span>Website URL:</span> <strong style="color: #a78bfa; word-break: break-all;">${escapeHTML(item.url)}</strong></div>
       <div><span>Domain Hostname:</span> <strong>${escapeHTML(item.hostname)}</strong></div>
       <div><span>Classification:</span> <strong style="color: ${color};">${item.classification}</strong></div>
       <div><span>Risk Score:</span> <strong style="color: ${color};">${item.riskScore} / 100</strong></div>
       <div><span>Scanned Time:</span> <strong>${escapeHTML(item.formattedTime || item.timestamp)}</strong></div>
-      <div><span>AI Prediction:</span> <strong>${escapeHTML(item.aiPrediction)}</strong></div>
+      <div><span>AI Prediction:</span> <strong>${escapeHTML(describeAI(item))}</strong></div>
     `;
 
     const scoreBox = document.createElement("div");
-    scoreBox.style.cssText = "background: #0f172a; padding: 0.75rem; border-radius: 6px; border: 1px solid #334155; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center;";
+    scoreBox.style.cssText = "background: #0b0b1a; padding: 0.75rem; border-radius: 6px; border: 1px solid #2a2a47; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center;";
     scoreBox.innerHTML = `
       <div><small style="color: #94a3b8;">URL Score (30%)</small><br><strong>${item.urlScore ?? "Unavailable"}</strong></div>
       <div><small style="color: #94a3b8;">Page Score (20%)</small><br><strong>${item.webpageScore ?? "Unavailable"}</strong></div>
@@ -209,11 +226,11 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     const reasonsTitle = document.createElement("h4");
-    reasonsTitle.style.cssText = "color: #38bdf8; margin-top: 0.5rem;";
+    reasonsTitle.style.cssText = "color: #a78bfa; margin-top: 0.5rem;";
     reasonsTitle.textContent = "Detection Reasons:";
 
     const reasonsList = document.createElement("ul");
-    reasonsList.style.cssText = "list-style: none; display: flex; flex-direction: column; gap: 0.35rem; background: #0f172a; padding: 0.75rem; border-radius: 6px; border: 1px solid #334155;";
+    reasonsList.style.cssText = "list-style: none; display: flex; flex-direction: column; gap: 0.35rem; background: #0b0b1a; padding: 0.75rem; border-radius: 6px; border: 1px solid #2a2a47;";
 
     if (Array.isArray(item.reasons) && item.reasons.length > 0) {
       item.reasons.forEach((r) => {

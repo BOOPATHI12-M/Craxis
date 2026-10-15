@@ -1,4 +1,4 @@
-// content.js - AI Phishing Guard Content Script (v1.1)
+// content.js - Craxis Content Script (v1.1)
 // DOM analysis and the in-page SAFE / SUSPICIOUS / DANGEROUS warning UI.
 // Uses shared/scoring.js (loaded before this file) for brand matching.
 
@@ -327,7 +327,7 @@ function renderWarningUI(result) {
       position: fixed !important;
       bottom: 16px !important;
       right: 16px !important;
-      background-color: #0f172a !important;
+      background-color: #0b0b1a !important;
       color: #34d399 !important;
       border: 1px solid #10b981 !important;
       border-radius: 20px !important;
@@ -342,7 +342,7 @@ function renderWarningUI(result) {
       opacity: 0.9 !important;
       transition: opacity 0.2s ease !important;
     `;
-    safeBadge.title = "AI Phishing Guard: SAFE website";
+    safeBadge.title = "Craxis: SAFE website";
     const badgeIcon = document.createElement("span");
     badgeIcon.textContent = "🛡️";
     const badgeText = document.createElement("span");
@@ -352,7 +352,7 @@ function renderWarningUI(result) {
     safeBadge.appendChild(badgeIcon);
     safeBadge.appendChild(badgeText);
     safeBadge.onclick = () => {
-      alert("AI Phishing Guard: This website is classified as SAFE with low risk indicators.");
+      alert("Craxis: This website is classified as SAFE with low risk indicators.");
     };
 
     root.appendChild(safeBadge);
@@ -370,7 +370,7 @@ function renderWarningUI(result) {
   // CASE 2 & 3: SUSPICIOUS (Banner) or DANGEROUS (Overlay Banner)
   const container = document.createElement("div");
   container.style.cssText = `
-    background-color: #0f172a !important;
+    background-color: #0b0b1a !important;
     color: #f8fafc !important;
     border-bottom: 3px solid ${isDangerous ? "#ef4444" : "#f59e0b"} !important;
     box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
@@ -446,7 +446,7 @@ function renderWarningUI(result) {
   // View Security Details Button
   const viewDetailsBtn = document.createElement("button");
   viewDetailsBtn.style.cssText = `
-    background-color: #0284c7 !important;
+    background-color: #6d4aff !important;
     color: #ffffff !important;
     border: none !important;
     padding: 6px 12px !important;
@@ -457,13 +457,13 @@ function renderWarningUI(result) {
   `;
   viewDetailsBtn.textContent = "View Security Details";
   viewDetailsBtn.onclick = () => {
-    alert("Click the AI Phishing Guard extension icon in your browser toolbar to view the complete explainable security report.");
+    alert("Click the Craxis extension icon in your browser toolbar to view the complete explainable security report.");
   };
 
   // Continue Anyway Button
   const continueBtn = document.createElement("button");
   continueBtn.style.cssText = `
-    background-color: #334155 !important;
+    background-color: #2a2a47 !important;
     color: #cbd5e1 !important;
     border: none !important;
     padding: 6px 12px !important;
@@ -488,8 +488,8 @@ function renderWarningUI(result) {
   detailBox.style.cssText = `
     font-size: 12px !important;
     color: #cbd5e1 !important;
-    background-color: #0f172a !important;
-    border: 1px solid #334155 !important;
+    background-color: #0b0b1a !important;
+    border: 1px solid #2a2a47 !important;
     padding: 10px 12px !important;
     border-radius: 6px !important;
     display: flex !important;

@@ -1,4 +1,4 @@
-// dashboard.js - AI Phishing Guard Security Intelligence Dashboard (Level 15)
+// dashboard.js - Craxis Security Intelligence Dashboard (Level 15)
 
 document.addEventListener("DOMContentLoaded", () => {
   const emptyState = document.getElementById("emptyState");
@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span><strong>${count}</strong> (${pct}%)</span>
         </div>
         <div class="progress-track">
-          <div class="progress-fill" style="width: ${pct}%; background-color: #38bdf8;"></div>
+          <div class="progress-fill" style="width: ${pct}%; background-color: #a78bfa;"></div>
         </div>
       `;
       container.appendChild(div);
@@ -249,20 +249,49 @@ document.addEventListener("DOMContentLoaded", () => {
     container.appendChild(dotsList);
   }
 
+  // Local and private-network addresses are never sent to the AI model.
+  function isLocalUrl(url) {
+    try {
+      const h = new URL(url).hostname.toLowerCase().replace(/^\[|\]$/g, "");
+      return (
+        h === "localhost" || h.endsWith(".localhost") || h === "::1" ||
+        /^127\./.test(h) || /^10\./.test(h) || /^192\.168\./.test(h) ||
+        /^169\.254\./.test(h) || /^172\.(1[6-9]|2\d|3[01])\./.test(h)
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Older history entries have no aiStatus, so it is worked out from the data.
+  function aiStatusOf(h) {
+    const pred = (h.aiPrediction || "").toUpperCase();
+    if (pred === "LEGITIMATE" || pred === "PHISHING") return "ok";
+    if (h.aiStatus === "skipped_local" || h.aiStatus === "unavailable") return h.aiStatus;
+    return isLocalUrl(h.url) ? "skipped_local" : "unavailable";
+  }
+
   function renderAISummary(history) {
     let legit = 0;
     let phish = 0;
+    let skipped = 0;
     let unavail = 0;
 
     history.forEach((h) => {
-      const pred = (h.aiPrediction || "").toUpperCase();
-      if (pred === "LEGITIMATE") legit++;
-      else if (pred === "PHISHING") phish++;
-      else unavail++;
+      const status = aiStatusOf(h);
+      if (status === "ok") {
+        if ((h.aiPrediction || "").toUpperCase() === "PHISHING") phish++;
+        else legit++;
+      } else if (status === "skipped_local") {
+        skipped++;
+      } else {
+        unavail++;
+      }
     });
 
     document.getElementById("aiLegitCount").textContent = legit;
     document.getElementById("aiPhishCount").textContent = phish;
+    document.getElementById("aiSkippedCount").textContent = skipped;
     document.getElementById("aiUnavailCount").textContent = unavail;
   }
 
@@ -298,7 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
       row.className = "indicator-row";
       row.innerHTML = `
         <span><span style="color: #f59e0b; margin-right: 6px;">•</span> ${escapeHTML(item.text)}</span>
-        <span class="tc-badge" style="background: #0c4a6e; color: #38bdf8; padding: 2px 8px; border-radius: 4px; font-weight: 700;">Occurrences: ${item.count}</span>
+        <span class="tc-badge" style="background: #2a1f5c; color: #a78bfa; padding: 2px 8px; border-radius: 4px; font-weight: 700;">Occurrences: ${item.count}</span>
       `;
       container.appendChild(row);
     });

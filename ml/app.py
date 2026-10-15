@@ -1,4 +1,4 @@
-"""AI Phishing Guard local REST API.
+"""Craxis local REST API.
 
 Endpoints
 ---------
@@ -98,7 +98,7 @@ def top_feature_pairs(limit: int = 6) -> list:
 def root():
     return jsonify(
         {
-            "status": "AI Phishing Guard REST API is running",
+            "status": "Craxis REST API is running",
             "version": model_version,
             "feature_count": len(FEATURE_NAMES),
         }
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     host = os.environ.get("AIPHISH_HOST", "127.0.0.1")
     port = int(os.environ.get("AIPHISH_PORT", "5000"))
     print("=" * 60)
-    print("AI Phishing Guard REST API")
+    print("Craxis REST API")
     print(f"Model: {model_algorithm} (version {model_version})")
     print(f"Domain intelligence: {'ENABLED' if domain_intel.intel_enabled() else 'disabled'}")
     print(f"Serving on http://{host}:{port}  (test pages: /test-pages/index.html)")

@@ -52,7 +52,7 @@ def predict_url(url: str):
 
     # Display results
     print("=" * 60)
-    print("AI Phishing Guard - ML Predictor (Level 5)")
+    print("Craxis - ML Predictor (Level 5)")
     print("=" * 60)
     print(f"URL:                  {url}")
     print(f"Prediction:           {label_text}")

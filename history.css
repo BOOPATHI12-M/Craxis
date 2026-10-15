@@ -2,7 +2,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #0f172a;
+  background-color: #0b0b1a;
   color: #f8fafc;
   padding: 2rem;
 }
@@ -16,7 +16,7 @@ body {
 }
 
 header {
-  border-bottom: 2px solid #334155;
+  border-bottom: 2px solid #2a2a47;
   padding-bottom: 1rem;
   display: flex;
   justify-content: space-between;
@@ -30,11 +30,11 @@ header {
 }
 
 .shield-icon { font-size: 2rem; }
-.title { font-size: 1.75rem; color: #38bdf8; font-weight: 700; }
+.title { font-size: 1.75rem; color: #a78bfa; font-weight: 700; }
 .subtitle { font-size: 0.9rem; color: #94a3b8; margin-top: 0.25rem; }
 
 .nav-btn {
-  background: #334155;
+  background: #2a2a47;
   color: #f8fafc;
   border: none;
   padding: 0.6rem 1.2rem;
@@ -44,7 +44,7 @@ header {
   cursor: pointer;
   transition: background 0.2s;
 }
-.nav-btn:hover { background: #475569; }
+.nav-btn:hover { background: #3a3a5c; }
 
 /* Controls Bar */
 .controls-bar {
@@ -61,9 +61,9 @@ header {
 }
 
 .tab-btn {
-  background: #1e293b;
+  background: #16162b;
   color: #94a3b8;
-  border: 1px solid #334155;
+  border: 1px solid #2a2a47;
   padding: 0.5rem 0.9rem;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -72,11 +72,11 @@ header {
   transition: all 0.2s;
 }
 
-.tab-btn:hover { background: #334155; color: #f8fafc; }
+.tab-btn:hover { background: #2a2a47; color: #f8fafc; }
 .tab-btn.active {
-  background: #0284c7;
+  background: #6d4aff;
   color: #ffffff;
-  border-color: #38bdf8;
+  border-color: #a78bfa;
 }
 
 .search-actions {
@@ -88,15 +88,15 @@ header {
 }
 
 .search-input {
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: #16162b;
+  border: 1px solid #2a2a47;
   color: #f8fafc;
   padding: 0.5rem 0.8rem;
   border-radius: 6px;
   font-size: 0.85rem;
   width: 100%;
 }
-.search-input:focus { outline: none; border-color: #38bdf8; }
+.search-input:focus { outline: none; border-color: #a78bfa; }
 
 .clear-btn {
   background: #7f1d1d;
@@ -120,8 +120,8 @@ header {
 }
 
 .card {
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: #16162b;
+  border: 1px solid #2a2a47;
   border-radius: 8px;
   padding: 1.25rem;
   display: flex;
@@ -156,8 +156,8 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #0b0b1a;
+  border: 1px solid #2a2a47;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -166,7 +166,7 @@ header {
 .time-stamp { font-size: 0.75rem; color: #94a3b8; }
 
 .detail-btn {
-  background: #0284c7;
+  background: #6d4aff;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -177,14 +177,14 @@ header {
   width: 100%;
   transition: background 0.2s;
 }
-.detail-btn:hover { background: #0369a1; }
+.detail-btn:hover { background: #5b3be0; }
 
 /* Empty State */
 .empty-state {
   text-align: center;
   padding: 4rem 1rem;
-  background: #1e293b;
-  border: 1px dashed #334155;
+  background: #16162b;
+  border: 1px dashed #2a2a47;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -198,8 +198,8 @@ header {
 
 /* Footer Note */
 .privacy-note {
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #0b0b1a;
+  border: 1px solid #2a2a47;
   border-radius: 8px;
   padding: 1rem;
   font-size: 0.8rem;
@@ -221,8 +221,8 @@ header {
 .modal-backdrop.hidden { display: none; }
 
 .modal-card {
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: #16162b;
+  border: 1px solid #2a2a47;
   border-radius: 8px;
   width: 100%;
   max-width: 550px;
@@ -235,8 +235,8 @@ header {
   gap: 1rem;
 }
 
-.modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 0.75rem; }
-.modal-title { font-size: 1.1rem; color: #38bdf8; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2a47; padding-bottom: 0.75rem; }
+.modal-title { font-size: 1.1rem; color: #a78bfa; }
 .close-icon { background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; }
 .close-icon:hover { color: #f8fafc; }
 
@@ -245,8 +245,8 @@ header {
 .confirm-modal { max-width: 400px; text-align: center; gap: 1rem; }
 .modal-actions { display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem; }
 .modal-btn { padding: 0.5rem 1.25rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; }
-.modal-btn.secondary { background: #334155; color: white; }
-.modal-btn.secondary:hover { background: #475569; }
+.modal-btn.secondary { background: #2a2a47; color: white; }
+.modal-btn.secondary:hover { background: #3a3a5c; }
 .modal-btn.danger { background: #dc2626; color: white; }
 .modal-btn.danger:hover { background: #b91c1c; }
 
@@ -255,7 +255,7 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 summary:focus-visible {
-  outline: 2px solid #38bdf8;
+  outline: 2px solid #a78bfa;
   outline-offset: 2px;
 }
 

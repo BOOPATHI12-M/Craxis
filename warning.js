@@ -1,4 +1,4 @@
-// warning.js - AI Phishing Guard blocking page.
+// warning.js - Craxis blocking page.
 // All values come from the query string and are rendered with textContent.
 
 (function () {

@@ -66,7 +66,7 @@ def main() -> int:
     args = parser.parse_args()
 
     print("=" * 64)
-    print(f"AI Phishing Guard - model training (version {MODEL_VERSION})")
+    print(f"Craxis - model training (version {MODEL_VERSION})")
     print(f"Features: {len(FEATURE_NAMES)}")
     print("=" * 64)
 

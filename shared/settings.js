@@ -1,4 +1,4 @@
-// shared/settings.js - AI Phishing Guard user settings (chrome.storage.sync).
+// shared/settings.js - Craxis user settings (chrome.storage.sync).
 // Works in the service worker, popup, options page and warning page.
 
 (function (root) {

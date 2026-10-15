@@ -1,4 +1,4 @@
-# AI Phishing Guard backend (Flask API + model).
+# Craxis backend (Flask API + model).
 #
 # Build:  docker build -t ai-phishing-guard .
 # Run:    docker run --rm -p 127.0.0.1:5000:5000 ai-phishing-guard

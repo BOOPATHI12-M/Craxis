@@ -1,8 +1,8 @@
-# AI Phishing Guard Privacy Policy
+# Craxis Privacy Policy
 
 Last updated: 2026-10-15
 
-AI Phishing Guard checks the websites you visit for signs of phishing. This
+Craxis checks the websites you visit for signs of phishing. This
 document explains what it reads, where that data goes, and what is stored.
 
 ## What the extension reads

@@ -1,4 +1,4 @@
-// options.js - AI Phishing Guard settings page.
+// options.js - Craxis settings page.
 
 (function () {
   "use strict";

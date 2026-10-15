@@ -2,7 +2,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #0f172a;
+  background-color: #0b0b1a;
   color: #f8fafc;
   padding: 2rem;
 }
@@ -16,7 +16,7 @@ body {
 }
 
 .header {
-  border-bottom: 2px solid #334155;
+  border-bottom: 2px solid #2a2a47;
   padding-bottom: 1rem;
   display: flex;
   justify-content: space-between;
@@ -31,12 +31,12 @@ body {
 }
 
 .shield-icon { font-size: 2rem; }
-.title { font-size: 1.75rem; color: #38bdf8; font-weight: 700; }
+.title { font-size: 1.75rem; color: #a78bfa; font-weight: 700; }
 .subtitle { font-size: 0.9rem; color: #94a3b8; margin-top: 0.25rem; }
 
 .nav-btns { display: flex; gap: 0.75rem; align-items: center; }
 .nav-btn {
-  background: #0284c7;
+  background: #6d4aff;
   color: #ffffff;
   border: none;
   padding: 0.6rem 1.1rem;
@@ -47,9 +47,9 @@ body {
   cursor: pointer;
   transition: background 0.2s ease;
 }
-.nav-btn:hover { background: #0369a1; }
-.nav-btn.secondary { background: #334155; }
-.nav-btn.secondary:hover { background: #475569; }
+.nav-btn:hover { background: #5b3be0; }
+.nav-btn.secondary { background: #2a2a47; }
+.nav-btn.secondary:hover { background: #3a3a5c; }
 
 /* Summary Grid */
 .summary-grid {
@@ -59,8 +59,8 @@ body {
 }
 
 .card {
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: #16162b;
+  border: 1px solid #2a2a47;
   border-radius: 8px;
   padding: 1.25rem;
 }
@@ -75,7 +75,7 @@ body {
 .stat-value {
   font-size: 2.2rem;
   font-weight: 800;
-  color: #38bdf8;
+  color: #a78bfa;
 }
 
 .stat-label {
@@ -89,7 +89,7 @@ body {
 .text-safe { color: #34d399 !important; }
 .text-suspicious { color: #fde047 !important; }
 .text-dangerous { color: #fca5a5 !important; }
-.text-highlight { color: #38bdf8 !important; }
+.text-highlight { color: #a78bfa !important; }
 .text-muted { color: #94a3b8 !important; }
 
 .dashboard-content {
@@ -112,9 +112,9 @@ body {
 
 .section-title {
   font-size: 1.1rem;
-  color: #38bdf8;
+  color: #a78bfa;
   font-weight: 700;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid #2a2a47;
   padding-bottom: 0.5rem;
 }
 
@@ -138,12 +138,12 @@ body {
 }
 
 .progress-track {
-  background: #0f172a;
+  background: #0b0b1a;
   border-radius: 4px;
   height: 10px;
   width: 100%;
   overflow: hidden;
-  border: 1px solid #334155;
+  border: 1px solid #2a2a47;
 }
 
 .progress-fill {
@@ -154,8 +154,8 @@ body {
 
 /* Trend Box */
 .trend-container {
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #0b0b1a;
+  border: 1px solid #2a2a47;
   border-radius: 6px;
   padding: 1rem;
   min-height: 140px;
@@ -195,14 +195,14 @@ body {
 /* AI Summary Grid */
 .ai-summary-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 0.75rem;
   text-align: center;
 }
 
 .ai-stat-card {
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #0b0b1a;
+  border: 1px solid #2a2a47;
   border-radius: 6px;
   padding: 0.75rem;
   display: flex;
@@ -226,8 +226,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #0b0b1a;
+  border: 1px solid #2a2a47;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -244,8 +244,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #0b0b1a;
+  border: 1px solid #2a2a47;
   padding: 0.6rem 0.8rem;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -265,8 +265,8 @@ body {
 }
 
 .privacy-note {
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #0b0b1a;
+  border: 1px solid #2a2a47;
   border-radius: 8px;
   padding: 1rem;
   font-size: 0.8rem;
@@ -277,8 +277,8 @@ body {
 .empty-state {
   text-align: center;
   padding: 4rem 1rem;
-  background: #1e293b;
-  border: 1px dashed #334155;
+  background: #16162b;
+  border: 1px dashed #2a2a47;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -296,7 +296,7 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 summary:focus-visible {
-  outline: 2px solid #38bdf8;
+  outline: 2px solid #a78bfa;
   outline-offset: 2px;
 }
 

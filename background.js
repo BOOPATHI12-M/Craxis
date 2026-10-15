@@ -1,4 +1,4 @@
-// background.js - AI Phishing Guard Service Worker (v1.1)
+// background.js - Craxis Service Worker (v1.1)
 // Navigation scanning, score fusion (shared/scoring.js), tab state, history,
 // trusted sites and the blocking warning page.
 
@@ -339,6 +339,10 @@ function saveScanToHistory(result, type) {
         }),
         reasons: reasons.length > 0 ? reasons : ["No suspicious indicators detected."],
         aiPrediction: result.aiResult && result.aiResult.prediction ? result.aiResult.prediction : "N/A",
+        // ok = model answered, skipped_local = not applied to a local address, unavailable = backend gave no answer
+        aiStatus: result.aiResult && result.aiResult.prediction
+          ? "ok"
+          : (result.aiSkipped ? "skipped_local" : "unavailable"),
         urlScore: result.urlScore ?? 0,
         webpageScore: result.webpageScore ?? 0,
         aiScore: result.aiScore ?? 0,

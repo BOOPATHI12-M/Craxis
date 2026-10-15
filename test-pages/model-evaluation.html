@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Phishing Guard — ML Model Evaluation Dashboard (Level 11)</title>
+  <title>Craxis — ML Model Evaluation Dashboard (Level 11)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 2rem; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b0b1a; color: #f8fafc; padding: 2rem; }
     .container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
-    header { border-bottom: 2px solid #334155; padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
-    .title { font-size: 1.75rem; color: #38bdf8; font-weight: 700; }
+    header { border-bottom: 2px solid #2a2a47; padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .title { font-size: 1.75rem; color: #a78bfa; font-weight: 700; }
     .subtitle { font-size: 0.9rem; color: #94a3b8; margin-top: 0.25rem; }
-    .nav-btn { background: #334155; color: #f8fafc; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
-    .nav-btn:hover { background: #475569; }
+    .nav-btn { background: #2a2a47; color: #f8fafc; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
+    .nav-btn:hover { background: #3a3a5c; }
 
     /* Metric Cards Grid */
     .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-    .metric-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1.25rem; text-align: center; display: flex; flex-direction: column; gap: 0.25rem; }
+    .metric-card { background: #16162b; border: 1px solid #2a2a47; border-radius: 8px; padding: 1.25rem; text-align: center; display: flex; flex-direction: column; gap: 0.25rem; }
     .metric-value { font-size: 2.2rem; font-weight: 800; color: #34d399; }
     .metric-label { font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
@@ -24,13 +24,13 @@
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 
     /* Card Section */
-    .section-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
-    .section-title { font-size: 1.1rem; color: #38bdf8; font-weight: 700; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
+    .section-card { background: #16162b; border: 1px solid #2a2a47; border-radius: 8px; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+    .section-title { font-size: 1.1rem; color: #a78bfa; font-weight: 700; border-bottom: 1px solid #2a2a47; padding-bottom: 0.5rem; }
 
     /* Confusion Matrix UI */
     .cm-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.9rem; }
-    .cm-table th, .cm-table td { padding: 0.75rem; border: 1px solid #334155; }
-    .cm-table th { background: #0f172a; color: #38bdf8; font-size: 0.8rem; }
+    .cm-table th, .cm-table td { padding: 0.75rem; border: 1px solid #2a2a47; }
+    .cm-table th { background: #0b0b1a; color: #a78bfa; font-size: 0.8rem; }
     .cm-cell { font-weight: 700; font-size: 1.1rem; }
     .cm-tn { background: #064e3b; color: #34d399; }
     .cm-fp { background: #78350f; color: #fde047; }
@@ -40,21 +40,21 @@
     /* Progress Bar Lists */
     .feature-bar-item { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; margin-bottom: 0.75rem; }
     .feature-bar-header { display: flex; justify-content: space-between; }
-    .progress-track { background: #0f172a; border-radius: 4px; height: 8px; width: 100%; overflow: hidden; border: 1px solid #334155; }
-    .progress-fill { background: #38bdf8; height: 100%; width: 0%; transition: width 0.5s ease; }
+    .progress-track { background: #0b0b1a; border-radius: 4px; height: 8px; width: 100%; overflow: hidden; border: 1px solid #2a2a47; }
+    .progress-fill { background: #a78bfa; height: 100%; width: 0%; transition: width 0.5s ease; }
 
     /* Info Lists */
     .info-list { list-style-type: none; font-size: 0.85rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 0.5rem; }
     .info-list li strong { color: #fde047; }
 
-    .disclaimer-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 1rem; font-size: 0.8rem; color: #64748b; line-height: 1.4; }
+    .disclaimer-box { background: #0b0b1a; border: 1px solid #2a2a47; border-radius: 8px; padding: 1rem; font-size: 0.8rem; color: #64748b; line-height: 1.4; }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <div>
-        <h1 class="title">📈 AI Phishing Guard — ML Model Evaluation</h1>
+        <h1 class="title">📈 Craxis — ML Model Evaluation</h1>
         <p class="subtitle">Random Forest Phishing Detection Model Performance & Real Dataset Metrics (Level 11)</p>
       </div>
       <a href="index.html" class="nav-btn">← Back to Test Center</a>
@@ -124,17 +124,17 @@
       <div class="section-card">
         <h2 class="section-title">📊 Dataset & Testing Distribution</h2>
         <ul class="info-list">
-          <li>Model Algorithm: <strong id="infoModel" style="color: #38bdf8;">Random Forest Classifier</strong></li>
-          <li>Model Version: <strong id="infoVersion" style="color: #38bdf8;">2.0 - Level 11</strong></li>
-          <li>Dataset File: <strong id="infoDataset" style="color: #38bdf8;">phishing_urls.csv</strong></li>
+          <li>Model Algorithm: <strong id="infoModel" style="color: #a78bfa;">Random Forest Classifier</strong></li>
+          <li>Model Version: <strong id="infoVersion" style="color: #a78bfa;">2.0 - Level 11</strong></li>
+          <li>Dataset File: <strong id="infoDataset" style="color: #a78bfa;">phishing_urls.csv</strong></li>
           <li>Total Cleaned Samples: <strong id="infoTotal">-</strong></li>
           <li>Training Samples (80%): <strong id="infoTrain">-</strong></li>
           <li>Testing Samples (20%): <strong id="infoTest">-</strong></li>
-          <li>Evaluation Split: <strong style="color: #38bdf8;">80/20 Stratified Split (random_state=42)</strong></li>
+          <li>Evaluation Split: <strong style="color: #a78bfa;">80/20 Stratified Split (random_state=42)</strong></li>
         </ul>
 
-        <div style="border-top: 1px solid #334155; padding-top: 0.75rem; margin-top: 0.5rem;">
-          <h3 style="font-size: 0.85rem; color: #38bdf8; margin-bottom: 0.5rem;">Sample Class Distribution</h3>
+        <div style="border-top: 1px solid #2a2a47; padding-top: 0.75rem; margin-top: 0.5rem;">
+          <h3 style="font-size: 0.85rem; color: #a78bfa; margin-bottom: 0.5rem;">Sample Class Distribution</h3>
           <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
             <span>Legitimate URLs: <strong id="distLegit">-</strong></span>
             <span>Phishing URLs: <strong id="distPhish">-</strong></span>

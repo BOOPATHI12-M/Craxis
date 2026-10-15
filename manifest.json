@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "AI Phishing Guard",
+  "name": "Craxis",
   "version": "1.1.0",
   "description": "Detects phishing websites in real time using URL rules, page structure analysis and a local machine learning model.",
   "permissions": [
@@ -17,7 +17,7 @@
   },
   "options_page": "options.html",
   "action": {
-    "default_title": "AI Phishing Guard",
+    "default_title": "Craxis",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",

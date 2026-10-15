@@ -39,8 +39,8 @@ h2 {
 .panel {
   margin-top: 18px;
   padding: 16px 18px;
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
+  background-color: #0b0b1a;
+  border: 1px solid #16162b;
   border-radius: 10px;
 }
 
@@ -85,14 +85,14 @@ input[type="text"] {
   padding: 8px 10px;
   font-size: 13px;
   color: #f8fafc;
-  background-color: #1e293b;
-  border: 1px solid #334155;
+  background-color: #16162b;
+  border: 1px solid #2a2a47;
   border-radius: 6px;
 }
 
 input:focus-visible,
 button:focus-visible {
-  outline: 2px solid #38bdf8;
+  outline: 2px solid #a78bfa;
   outline-offset: 2px;
 }
 
@@ -119,11 +119,11 @@ button:focus-visible {
 }
 
 .btn.primary {
-  background-color: #0284c7;
+  background-color: #6d4aff;
 }
 
 .btn.secondary {
-  background-color: #334155;
+  background-color: #2a2a47;
 }
 
 .btn:hover {
@@ -156,7 +156,7 @@ button:focus-visible {
   margin-top: 6px;
   padding: 6px 10px;
   font-size: 13px;
-  background-color: #1e293b;
+  background-color: #16162b;
   border-radius: 6px;
 }
 
@@ -182,7 +182,7 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 summary:focus-visible {
-  outline: 2px solid #38bdf8;
+  outline: 2px solid #a78bfa;
   outline-offset: 2px;
 }
 

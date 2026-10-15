@@ -89,7 +89,7 @@ def main(argv=None) -> int:
         return 1
 
     print("=" * 64)
-    print("AI Phishing Guard - model evaluation")
+    print("Craxis - model evaluation")
     print("=" * 64)
 
     payload = joblib.load(MODEL_PATH)
@@ -145,7 +145,7 @@ def main(argv=None) -> int:
     print(f"Wrote {JSON_PATH}")
 
     lines = [
-        "# AI Phishing Guard: Model Evaluation Report",
+        "# Craxis: Model Evaluation Report",
         "",
         "## Summary",
         "",

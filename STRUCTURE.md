@@ -1,6 +1,6 @@
 # Project Structure Guide
 
-A map of the AI Phishing Guard folder: what each file is, how the files call each other, and where to start reading. Use it to understand any single file in context.
+A map of the Craxis folder: what each file is, how the files call each other, and where to start reading. Use it to understand any single file in context.
 
 ## 1. The big picture
 

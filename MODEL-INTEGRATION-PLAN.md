@@ -1,6 +1,6 @@
 # New Model Integration Plan
 
-Plan for adding the Random Forest model trained on the second laptop (`ml/model/phishing_model.joblib`) to AI Phishing Guard without breaking the existing extension.
+Plan for adding the Random Forest model trained on the second laptop (`ml/model/phishing_model.joblib`) to Craxis without breaking the existing extension.
 
 **Status:** inspection finished. No integration code has been written and no model has been connected.
 
@@ -218,7 +218,7 @@ pip install -r requirements.txt
 python ml/app.py
 ```
 
-Reload the extension: `chrome://extensions`, find AI Phishing Guard, press the reload icon, then open `http://127.0.0.1:5000/test-pages/index.html`.
+Reload the extension: `chrome://extensions`, find Craxis, press the reload icon, then open `http://127.0.0.1:5000/test-pages/index.html`.
 
 ---
 

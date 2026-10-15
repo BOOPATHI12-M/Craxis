@@ -1,4 +1,4 @@
-# Starts the AI Phishing Guard backend on Windows.
+# Starts the Craxis backend on Windows.
 # Usage: powershell -ExecutionPolicy Bypass -File start-backend.ps1 [-Intel]
 param(
     [switch]$Intel

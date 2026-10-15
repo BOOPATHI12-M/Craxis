@@ -1,10 +1,10 @@
-# AI Phishing Guard: Code Analysis and How the Extension Works
+# Craxis: Code Analysis and How the Extension Works
 
 This document explains how the code in this folder is organised and how the Chrome extension runs end to end. It describes version 1.1.0.
 
 ## 1. What this project is
 
-AI Phishing Guard is a Manifest V3 Chrome extension. It scores every http/https page a user visits for phishing risk. It combines three signals:
+Craxis is a Manifest V3 Chrome extension. It scores every http/https page a user visits for phishing risk. It combines three signals:
 
 1. **URL rules** written in JavaScript.
 2. **Page structure (DOM) checks** run by a content script inside the page.

@@ -1,6 +1,6 @@
-# AI Phishing Guard — Local Security Test & Evaluation Suite
+# Craxis — Local Security Test & Evaluation Suite
 
-This directory contains the **Safe Local Security Test & Evaluation System** for the AI Phishing Guard Chrome Extension.
+This directory contains the **Safe Local Security Test & Evaluation System** for the Craxis Chrome Extension.
 
 ---
 
@@ -34,7 +34,7 @@ test-pages/
    python ml/app.py
    ```
 2. **Reload Extension in Chrome:**
-   - Open `chrome://extensions` and click **Reload (↻)** on AI Phishing Guard.
+   - Open `chrome://extensions` and click **Reload (↻)** on Craxis.
 3. **Launch Test Center:**
    - Open `http://127.0.0.1:5000/test-pages/index.html` in Google Chrome.
 4. **Execute & Record Test Cases:**

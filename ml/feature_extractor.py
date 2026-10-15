@@ -1,4 +1,4 @@
-"""URL feature extraction for the AI Phishing Guard model.
+"""URL feature extraction for the Craxis model.
 
 Keywords, shorteners, brands and TLD lists are read from shared/config.json so
 the extension (JavaScript) and the model (Python) always use the same lists.
