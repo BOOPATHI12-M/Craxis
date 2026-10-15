@@ -8,6 +8,33 @@ var Scoring = typeof AIPhishScoring !== "undefined" ? AIPhishScoring : null;
 if (!window.__aiphishGuardLoaded) {
   window.__aiphishGuardLoaded = true;
   chrome.runtime.onMessage.addListener(handleContentMessage);
+
+  // permission-watch.js (page world) announces sensitive permission requests.
+  // Ask the background to scan again, because the first scan may have run before.
+  var permissionTimer = null;
+  window.addEventListener("craxis-permission", () => {
+    clearTimeout(permissionTimer);
+    permissionTimer = setTimeout(() => {
+      try {
+        chrome.runtime.sendMessage({ action: "PERMISSION_EVENT" }, () => void chrome.runtime.lastError);
+      } catch (e) {
+        // extension reloaded; nothing to do
+      }
+    }, 1200);
+  });
+}
+
+/** Permission requests recorded by permission-watch.js: [{ kind, gesture }]. */
+function readPermissionRequests() {
+  try {
+    const raw = document.documentElement.getAttribute("data-craxis-permissions");
+    const list = raw ? JSON.parse(raw) : [];
+    return Array.isArray(list)
+      ? list.filter((r) => r && typeof r.kind === "string").map((r) => ({ kind: r.kind, gesture: !!r.gesture }))
+      : [];
+  } catch (e) {
+    return [];
+  }
 }
 
 function handleContentMessage(request, sender, sendResponse) {
@@ -235,6 +262,48 @@ function analyzePage() {
     indicators.push({ severity: "LOW", text: "Favicon loaded from another domain", icon: "⚠" });
   }
 
+  // 8. Sensitive browser permissions the page asked for. A page that asks for
+  // the camera, microphone, screen, location or clipboard without any user
+  // action, or a login page that asks at all, has no obvious reason to.
+  const permissionRequests = readPermissionRequests();
+  const SENSITIVE = ["camera", "microphone", "screen", "location", "clipboard"];
+  const sensitiveAuto = permissionRequests.filter((r) => SENSITIVE.includes(r.kind) && !r.gesture);
+  const sensitiveClicked = permissionRequests.filter((r) => SENSITIVE.includes(r.kind) && r.gesture);
+  const notifyAuto = permissionRequests.filter((r) => r.kind === "notifications" && !r.gesture);
+  const names = (list) => Array.from(new Set(list.map((r) => r.kind))).join(", ");
+
+  if (sensitiveAuto.length > 0) {
+    webpageScore += 20;
+    webpageReasons.push(`Page asked for ${names(sensitiveAuto)} access without any user action`);
+    indicators.push({ severity: "MEDIUM", text: `Asked for ${names(sensitiveAuto)} access on its own`, icon: "⚠" });
+  } else if (sensitiveClicked.length > 0 && passwordFields > 0) {
+    webpageScore += 10;
+    webpageReasons.push(`A login page asked for ${names(sensitiveClicked)} access, which a login page should not need`);
+    indicators.push({ severity: "LOW", text: `Login page asked for ${names(sensitiveClicked)} access`, icon: "⚠" });
+  }
+  if (notifyAuto.length > 0) {
+    webpageScore += 10;
+    webpageReasons.push("Page asked to send notifications as soon as it loaded");
+    indicators.push({ severity: "LOW", text: "Notification permission requested on load", icon: "⚠" });
+  }
+
+  // Embedded frames from other domains that are allowed to use the camera or microphone.
+  let mediaFrames = 0;
+  iframes.forEach((frame) => {
+    const allow = (frame.getAttribute("allow") || "").toLowerCase();
+    const src = frame.getAttribute("src");
+    if (!src || !/(camera|microphone|display-capture)/.test(allow)) return;
+    try {
+      const frameHost = new URL(src, window.location.href).hostname;
+      if (frameHost && frameHost !== currentHostname) mediaFrames++;
+    } catch (e) {}
+  });
+  if (mediaFrames > 0) {
+    webpageScore += 10;
+    webpageReasons.push("Embedded frame from another domain is allowed to use the camera or microphone");
+    indicators.push({ severity: "LOW", text: `Cross-domain frame with camera or microphone access (${mediaFrames})`, icon: "⚠" });
+  }
+
   webpageScore = Math.min(webpageScore, 100);
 
   return {
@@ -251,6 +320,7 @@ function analyzePage() {
     suspiciousTitle: suspiciousTitle,
     brandMismatch: brandMismatch,
     externalFavicon: externalFavicon,
+    permissionRequests: permissionRequests,
     pageTitle: pageTitle || "Untitled Page",
     score: webpageScore,
     reasons: webpageReasons,
@@ -294,38 +364,47 @@ const CRAXIS_BANNER_CSS = `
   :host { all: initial; }
   * { box-sizing: border-box; margin: 0; padding: 0; text-align: left; }
   .wrap {
-    position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-    width: min(860px, calc(100vw - 24px)); z-index: 2147483647;
-    font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+    width: min(720px, calc(100vw - 20px)); z-index: 2147483647;
+    font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: #f5f3ff; background: #0b0b1a; border: 1px solid #2a2a47;
-    border-left: 5px solid var(--accent); border-radius: 12px;
-    box-shadow: 0 12px 40px rgba(0,0,0,.55); padding: 14px 16px;
-    display: flex; flex-direction: column; gap: 10px;
+    border-left: 4px solid var(--accent); border-radius: 10px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.5); overflow: hidden;
   }
   .wrap.suspicious { --accent: #f59e0b; --tint: #fde68a; --pill: #451a03; }
   .wrap.dangerous  { --accent: #ef4444; --tint: #fecaca; --pill: #450a0a; }
-  .top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: .02em; }
-  .pill { background: var(--pill); color: var(--tint); border: 1px solid var(--accent);
-    border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
-  .score { margin-left: auto; color: #c4b5fd; font-size: 12px; font-weight: 600; }
-  ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 6px 16px; }
-  li { position: relative; padding-left: 16px; color: #e2e8f0; font-size: 12.5px; }
-  li::before { content: ""; position: absolute; left: 2px; top: .55em; width: 6px; height: 6px;
-    border-radius: 50%; background: var(--accent); }
-  .rec { color: var(--tint); font-weight: 600; font-size: 12.5px; }
-  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  button { font: inherit; font-size: 12px; font-weight: 600; border: 0; border-radius: 8px;
-    padding: 7px 12px; cursor: pointer; }
+  .bar { display: flex; align-items: center; gap: 10px; padding: 8px 10px 8px 12px; }
+  .bar svg { flex: none; }
+  .pill { flex: none; background: var(--pill); color: var(--tint); border: 1px solid var(--accent);
+    border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .summary { flex: 1; min-width: 0; color: #cbd5e1; font-size: 12.5px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .score { flex: none; color: #c4b5fd; font-size: 12px; font-weight: 700; }
+  .btns { flex: none; display: flex; gap: 6px; }
+  button { font: inherit; font-size: 12px; font-weight: 600; border: 0; border-radius: 7px;
+    padding: 6px 10px; cursor: pointer; white-space: nowrap; }
   button:focus-visible { outline: 2px solid #a78bfa; outline-offset: 2px; }
   .primary { background: #6d4aff; color: #fff; }
   .danger  { background: #dc2626; color: #fff; }
-  .ghost   { background: #2a2a47; color: #e2e8f0; }
+  .ghost   { background: transparent; color: #cbd5e1; border: 1px solid #2a2a47; }
+  .close   { background: transparent; color: #94a3b8; font-size: 18px; line-height: 1; padding: 2px 8px; }
+  .details { display: none; border-top: 1px solid #2a2a47; padding: 10px 14px 12px 14px;
+    background: #12122a; }
+  .wrap.open .details { display: block; }
+  .details h2 { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #94a3b8;
+    margin-bottom: 6px; font-weight: 700; }
+  ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  li { position: relative; padding-left: 16px; color: #e2e8f0; font-size: 12.5px; }
+  li::before { content: ""; position: absolute; left: 2px; top: .5em; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent); }
+  .rec { margin-top: 10px; color: var(--tint); font-weight: 600; font-size: 12.5px; }
+  .foot { margin-top: 10px; font-size: 11.5px; color: #94a3b8; }
   .safe { position: fixed; bottom: 16px; right: 16px; z-index: 2147483647; display: flex; align-items: center; gap: 8px;
     font: 600 12px/1 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #6ee7b7; background: #0b0b1a;
     border: 1px solid #10b981; border-radius: 999px; padding: 6px 12px 6px 8px; opacity: .92;
     box-shadow: 0 4px 12px rgba(0,0,0,.4); cursor: default; transition: opacity .2s; }
   .safe svg { width: 18px; height: 18px; }
+  @media (max-width: 560px) { .summary { display: none; } .bar { flex-wrap: wrap; } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 `;
 
@@ -339,6 +418,7 @@ function craxisEl(tag, className, text) {
 /**
  * Renders the in-page Craxis warning UI (SAFE badge, SUSPICIOUS or DANGEROUS banner).
  * Drawn inside a shadow root so the host page's CSS cannot distort it.
+ * The banner is a single compact bar; "Details" expands the reasons in place.
  * @param {Object} result - Scanned security result
  */
 function renderWarningUI(result) {
@@ -382,26 +462,62 @@ function renderWarningUI(result) {
     return;
   }
 
+  const reasons = Scoring ? Scoring.collectReasons(result) : [];
+  const shown = reasons.length ? reasons : ["Suspicious risk indicators detected."];
+
   const wrap = craxisEl("div", "wrap " + (isDangerous ? "dangerous" : "suspicious"));
   wrap.setAttribute("role", "alert");
 
-  const top = craxisEl("div", "top");
-  const brand = craxisEl("div", "brand");
-  brand.insertAdjacentHTML("afterbegin", CRAXIS_LOGO_SVG);
-  brand.appendChild(craxisEl("span", "", "Craxis"));
-  top.appendChild(brand);
-  top.appendChild(craxisEl("span", "pill", isDangerous ? "High-risk website" : "Suspicious website"));
-  top.appendChild(craxisEl("span", "score", "Risk score " + finalScore + "/100"));
-  wrap.appendChild(top);
+  // ---- compact bar (always visible)
+  const bar = craxisEl("div", "bar");
+  bar.insertAdjacentHTML("afterbegin", CRAXIS_LOGO_SVG);
+  bar.appendChild(craxisEl("span", "pill", isDangerous ? "High risk" : "Suspicious"));
+  const summary = craxisEl(
+    "span",
+    "summary",
+    shown[0] + (shown.length > 1 ? " (+" + (shown.length - 1) + " more)" : "")
+  );
+  bar.appendChild(summary);
+  bar.appendChild(craxisEl("span", "score", finalScore + "/100"));
 
-  const reasons = Scoring ? Scoring.collectReasons(result) : [];
+  const btns = craxisEl("div", "btns");
+  const toggle = craxisEl("button", "primary", "Details");
+  toggle.type = "button";
+  toggle.setAttribute("aria-expanded", "false");
+  toggle.onclick = () => {
+    const open = wrap.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    toggle.textContent = open ? "Hide" : "Details";
+  };
+  btns.appendChild(toggle);
+  if (isDangerous) {
+    const back = craxisEl("button", "danger", "Go back");
+    back.type = "button";
+    back.onclick = () => {
+      if (window.history.length > 1) window.history.back();
+      else alert("Cannot go back: No previous page in browsing history for this tab.");
+    };
+    btns.appendChild(back);
+  }
+  const close = craxisEl("button", "close", "×");
+  close.type = "button";
+  close.title = "Continue anyway (dismiss for this tab session)";
+  close.setAttribute("aria-label", "Dismiss warning and continue");
+  close.onclick = () => {
+    sessionStorage.setItem(pageSessionKey, "true");
+    host.remove();
+  };
+  btns.appendChild(close);
+  bar.appendChild(btns);
+  wrap.appendChild(bar);
+
+  // ---- expandable details
+  const details = craxisEl("div", "details");
+  details.appendChild(craxisEl("h2", "", "Why Craxis flagged this page"));
   const list = craxisEl("ul");
-  (reasons.length ? reasons.slice(0, 4) : ["Suspicious risk indicators detected."]).forEach((r) => {
-    list.appendChild(craxisEl("li", "", String(r)));
-  });
-  wrap.appendChild(list);
-
-  wrap.appendChild(
+  shown.slice(0, 8).forEach((r) => list.appendChild(craxisEl("li", "", String(r))));
+  details.appendChild(list);
+  details.appendChild(
     craxisEl(
       "p",
       "rec",
@@ -410,41 +526,10 @@ function renderWarningUI(result) {
         : "Verify the website address in your address bar before proceeding."
     )
   );
-
-  const actions = craxisEl("div", "actions");
-  if (isDangerous) {
-    const back = craxisEl("button", "danger", "Go back");
-    back.type = "button";
-    back.onclick = () => {
-      if (window.history.length > 1) window.history.back();
-      else alert("Cannot go back: No previous page in browsing history for this tab.");
-    };
-    actions.appendChild(back);
-  }
-  const details = craxisEl("button", "primary", "View details");
-  details.type = "button";
-  details.onclick = () => {
-    // A page cannot open the toolbar popup, so ask the background to open the
-    // scan's detail view in a new tab.
-    try {
-      chrome.runtime.sendMessage({ action: "OPEN_DETAILS" }, (response) => {
-        if (chrome.runtime.lastError || !response || !response.success) {
-          alert("Could not open the report. Click the Craxis icon in your browser toolbar instead.");
-        }
-      });
-    } catch (e) {
-      alert("Could not open the report. Click the Craxis icon in your browser toolbar instead.");
-    }
-  };
-  const cont = craxisEl("button", "ghost", "Continue anyway");
-  cont.type = "button";
-  cont.onclick = () => {
-    sessionStorage.setItem(pageSessionKey, "true");
-    host.remove();
-  };
-  actions.appendChild(details);
-  actions.appendChild(cont);
-  wrap.appendChild(actions);
+  details.appendChild(
+    craxisEl("p", "foot", "Open the Craxis toolbar icon for the full score breakdown. Use × to continue anyway.")
+  );
+  wrap.appendChild(details);
 
   shadow.appendChild(wrap);
   document.body.appendChild(host);

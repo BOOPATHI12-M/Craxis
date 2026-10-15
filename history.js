@@ -211,16 +211,16 @@ document.addEventListener("DOMContentLoaded", () => {
   function describeAI(item) {
     const pred = (item.aiPrediction || "").toUpperCase();
     if (pred === "LEGITIMATE" || pred === "PHISHING") return item.aiPrediction;
-    if (item.aiStatus === "skipped_local") return "Not applied (local address)";
+    if (item.aiStatus === "skipped_local") return "Not applied (this computer's own address)";
     if (item.aiStatus === "unavailable") return "Unavailable (AI server did not answer)";
     let local = false;
     try {
       const h = new URL(item.url).hostname.toLowerCase();
-      local = h === "localhost" || /^127\./.test(h) || /^10\./.test(h) || /^192\.168\./.test(h);
+      local = h === "localhost" || h.endsWith(".localhost") || /^127\./.test(h);
     } catch (e) {
       local = false;
     }
-    return local ? "Not applied (local address)" : "Unavailable (AI server did not answer)";
+    return local ? "Not applied (this computer's own address)" : "Unavailable (AI server did not answer)";
   }
 
   function openDetailsModal(item) {

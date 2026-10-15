@@ -123,6 +123,10 @@ The total is capped at 100. Domain age under 30 days (+25) or 90 days (+10) and 
 | External iframe | +10 |
 | Brand named in title or site name but hosted elsewhere, with a form or password field | +20 |
 | Icon loaded from another domain on a page with a password field | +5 |
+| Camera, microphone, screen, location or clipboard requested with no user action | +20 |
+| Same permissions requested by a page with a password field, after a click | +10 |
+| Notification permission requested on load | +10 |
+| Cross-domain frame allowed to use the camera or microphone | +10 |
 
 A same-origin HTTPS login form adds nothing. The code reads only structure. It never reads typed values, cookies or passwords.
 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in - Permission Request Test (TC11)</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 2rem; }
+    .box { max-width: 520px; margin: 0 auto; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; }
+    input { display: block; width: 100%; margin: 0.5rem 0 1rem; padding: 0.6rem; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #e2e8f0; box-sizing: border-box; }
+    button { padding: 0.6rem 1rem; border-radius: 6px; border: none; background: #0284c7; color: #fff; cursor: pointer; }
+    .note { font-size: 0.85rem; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Sign in</h1>
+    <p class="note">
+      <strong>TC11 harmless test page.</strong> This sign-in page asks the browser for camera access as soon as it
+      loads, with no user action. A sign-in page has no reason to need a camera. Your browser will show its own
+      permission prompt. Choose <strong>Block</strong>. No video is recorded or sent anywhere.
+    </p>
+    <form action="#" method="POST" data-test-message="TC11 test form submission prevented.">
+      <label>Username<input type="text" name="user" autocomplete="off"></label>
+      <label>Password<input type="password" name="pass" autocomplete="off"></label>
+      <button type="submit">Sign in</button>
+    </form>
+  </div>
+  <script src="no-submit.js"></script>
+  <script src="permission-request-test.js"></script>
+</body>
+</html>

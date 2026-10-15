@@ -92,9 +92,9 @@
               <span id="aiPhishCount" class="ai-stat-val text-dangerous">0</span>
               <span class="ai-stat-lbl">PHISHING</span>
             </div>
-            <div class="ai-stat-card" title="Local addresses such as localhost and 127.0.0.1 are never sent to the AI model">
+            <div class="ai-stat-card" title="Only this computer's own address (localhost, 127.0.0.1) is not sent to the AI model">
               <span id="aiSkippedCount" class="ai-stat-val text-muted">0</span>
-              <span class="ai-stat-lbl">NOT APPLIED (LOCAL)</span>
+              <span class="ai-stat-lbl">NOT APPLIED (THIS PC)</span>
             </div>
             <div class="ai-stat-card" title="The backend did not answer. Start it with: python ml/app.py">
               <span id="aiUnavailCount" class="ai-stat-val text-muted">0</span>
@@ -102,8 +102,8 @@
             </div>
           </div>
           <p class="note-text">
-            Based on AI model predictions recorded in local history. "Not applied" means the page was on a local
-            address, which the model is not used for. "Backend unavailable" means the AI server was not running
+            Based on AI model predictions recorded in local history. "Not applied" means the page was on this
+            computer's own address (localhost or 127.0.0.1). "Backend unavailable" means the AI server was not running
             or did not answer. Start it with <strong>python ml/app.py</strong> and scan a public website.
           </p>
         </div>

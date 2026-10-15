@@ -146,7 +146,7 @@ async function runScanForTab(tab, isManual = false) {
     updateProgressText("Consulting the Random Forest AI model...");
     let isLocal = false;
     try {
-      isLocal = Scoring.isLocalHost(new URL(url).hostname);
+      isLocal = Scoring.isLoopbackHost(new URL(url).hostname);
     } catch (e) {
       isLocal = false;
     }
@@ -416,6 +416,10 @@ function displayCombinedResultFromObj(res) {
       if (r.includes("different domain")) return "+25 " + r;
       if (r.includes("suspicious links")) return "+15 " + r;
       if (r.includes("hidden links")) return "+10 " + r;
+      if (r.includes("without any user action")) return "+20 " + r;
+      if (r.includes("should not need")) return "+10 " + r;
+      if (r.includes("notifications as soon")) return "+10 " + r;
+      if (r.includes("camera or microphone")) return "+10 " + r;
       if (r.includes("brand")) return "+20 " + r;
       if (r.includes("external iframe")) return "+10 " + r;
       return "+5 " + r;
@@ -456,7 +460,7 @@ function displayCombinedResultFromObj(res) {
   } else {
     if (aiPredictionText) {
       aiPredictionText.textContent = res.aiSkipped
-        ? "Not applied to local addresses"
+        ? "Not applied (this computer's own address)"
         : "Unavailable (AI server offline)";
       aiPredictionText.className = "";
     }
@@ -684,7 +688,7 @@ function renderSummaryChecklist(container, urlResult, pageResult, aiResult, aiSk
   } else {
     items.push({
       severity: "INFO",
-      text: aiSkipped ? "AI model is not applied to local addresses" : "AI Model analysis unavailable (Server offline)",
+      text: aiSkipped ? "AI model is not applied to this computer's own address" : "AI Model analysis unavailable (Server offline)",
       icon: "ℹ"
     });
   }

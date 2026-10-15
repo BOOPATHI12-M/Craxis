@@ -12,6 +12,7 @@ document explains what it reads, where that data goes, and what is stored.
 - **The structure of the page.** The content script counts password fields,
   forms, links, iframes and scripts, and reads the page title, the site name
   meta tag and the icon address.
+- **Permission requests.** A small script notes that the page asked for the camera, microphone, screen, location, clipboard or notifications, and whether a click came first. It never reads video, audio, positions or clipboard text, and the page's own request still goes through unchanged.
 - **It never reads** what you type, form values, passwords, one-time codes,
   cookies, page text beyond the title, or your browsing history outside the
   pages you open.

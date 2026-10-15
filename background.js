@@ -18,6 +18,9 @@ const RESCAN_GUARD_MS = 8000;
 // service worker restart does not lose the state shown in the popup.
 const tabScans = {};
 
+// Last permission-triggered rescan per tab (debounce).
+const permissionRescan = {};
+
 // Settings cache, refreshed when the user changes them.
 let settingsCache = null;
 
@@ -146,7 +149,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
     const trust = Scoring.trustStatus(details.url, settings.userAllowlist);
     if (trust.trusted) return;
 
-    const isLocal = Scoring.isLocalHost(hostOf(details.url));
+    const isLocal = Scoring.isLoopbackHost(hostOf(details.url));
     let urlResult = Scoring.analyzeURL(details.url);
     const aiResult = isLocal ? null : await Api.predict(details.url, settings, 2500);
     if (aiResult && aiResult.intel) urlResult = Scoring.applyIntel(urlResult, aiResult.intel);
@@ -197,8 +200,9 @@ async function runAutomaticScan(tabId, url) {
     const settings = await getSettings();
     const trust = Scoring.trustStatus(url, settings.userAllowlist);
 
-    // The model is trained on public web URLs, so it is not applied to local addresses.
-    const isLocal = Scoring.isLocalHost(hostOf(url));
+    // Only the user's own machine (localhost, 127.x.x.x) is skipped. Private network
+    // sites such as a college portal on 172.16.x.x are analysed like any other site.
+    const isLocal = Scoring.isLoopbackHost(hostOf(url));
     let urlResult = Scoring.analyzeURL(url);
     const [pageResult, aiResult] = await Promise.all([
       requestPageDOM(tabId),
@@ -276,6 +280,20 @@ async function handleMessage(request, sender) {
       return { success: true };
     }
 
+    case "PERMISSION_EVENT": {
+      // A page asked for a sensitive permission after load: scan it again.
+      const tab = sender.tab;
+      if (!tab || typeof tab.id !== "number" || !isScannableUrl(tab.url)) return { success: false };
+      const settings = await getSettings();
+      if (!settings.autoScan) return { success: false };
+      const now = Date.now();
+      const last = permissionRescan[tab.id] || 0;
+      if (now - last < 4000) return { success: true, debounced: true };
+      permissionRescan[tab.id] = now;
+      runAutomaticScan(tab.id, tab.url);
+      return { success: true };
+    }
+
     case "OPEN_HISTORY":
       await chrome.tabs.create({ url: "history.html" });
       return { success: true };
@@ -330,7 +348,11 @@ function saveScanToHistory(result, type) {
       let history = Array.isArray(data[HISTORY_KEY]) ? data[HISTORY_KEY] : [];
       const now = Date.now();
       const recent = history.find((h) => h.url === result.url && now - (h.rawTimestamp || 0) < DEDUPE_MS);
-      if (recent) return;
+      if (recent) {
+        // Keep the earlier entry unless this scan found something worse.
+        if ((result.finalScore ?? 0) <= (recent.riskScore ?? 0)) return;
+        history = history.filter((h) => h !== recent);
+      }
 
       const reasons = Scoring.collectReasons(result);
       const entry = {

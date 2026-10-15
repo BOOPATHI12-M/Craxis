@@ -55,6 +55,14 @@
     return false;
   }
 
+  /** True only for the user's own machine: localhost, 127.x.x.x and ::1. */
+  function isLoopbackHost(host) {
+    var h = String(host || "").trim().toLowerCase().replace(/^\[|\]$/g, "");
+    if (!h) return false;
+    if (h === "localhost" || h.endsWith(".localhost") || h === "::1") return true;
+    return /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(h);
+  }
+
   function normalizeHost(host) {
     return String(host || "").trim().toLowerCase().replace(/^\.+|\.+$/g, "");
   }
@@ -504,6 +512,7 @@
     parseUrl: parseUrl,
     isIpHost: isIpHost,
     isLocalHost: isLocalHost,
+    isLoopbackHost: isLoopbackHost,
     registrableDomain: registrableDomain,
     editDistance: editDistance,
     trustStatus: trustStatus,

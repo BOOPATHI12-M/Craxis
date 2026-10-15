@@ -89,6 +89,15 @@ const TEST_SUITE_CONFIG = [
     expectedIndicator: "Accumulated High Risk (Password Field + External Form + Security Keyword + Hidden Link)",
     expectedClassification: "DANGEROUS",
     description: "Harmless local test page specifically engineered with multiple simultaneous high-risk structural features to naturally trigger the DANGEROUS threshold (Risk Score >= 60)."
+  },
+  {
+    id: "TC11",
+    name: "Unexpected Permission Request (Camera on a Sign-in Page)",
+    file: "/test-pages/permission-request-test.html",
+    category: "Behaviour Rule",
+    expectedIndicator: "Page asked for camera access without any user action (+20)",
+    expectedClassification: "SUSPICIOUS",
+    description: "Harmless sign-in page that asks the browser for camera access as soon as it loads, with no user action. Your browser shows its own prompt, so choose Block. Nothing is recorded or sent."
   }
 ];
 

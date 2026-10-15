@@ -170,6 +170,47 @@ async function runFlows(context, worker) {
   );
   await page.close();
 
+  // Flow 6: permission requests. HTTPS is used because camera APIs do not exist
+  // on insecure pages. Pages are served from the test itself through routing.
+  const permCases = [
+    { host: "perm-a.example.test", click: true, expect: (r) => r.reasons.length === 0 && r.kinds.includes("camera"),
+      name: "Camera after a click on an ordinary page is not flagged",
+      body: "<h1>Meeting</h1><button id=b>Start</button><script>document.getElementById('b').onclick=()=>navigator.mediaDevices.getUserMedia({video:true}).catch(()=>{});</script>" },
+    { host: "perm-b.example.test", click: true, expect: (r) => r.reasons.some((x) => x.includes("should not need")),
+      name: "Camera requested by a login page is flagged (+10)",
+      body: "<form><input type=password></form><button id=b>Verify</button><script>document.getElementById('b').onclick=()=>navigator.mediaDevices.getUserMedia({video:true}).catch(()=>{});</script>" },
+    { host: "perm-c.example.test", click: false, expect: (r) => r.reasons.some((x) => x.includes("without any user action")),
+      name: "Location requested on load is flagged (+20)",
+      body: "<h1>Weather</h1><script>navigator.geolocation.getCurrentPosition(()=>{},()=>{});</script>" },
+    { host: "perm-d.example.test", click: false, expect: (r) => r.reasons.some((x) => x.includes("notifications")),
+      name: "Notification request on load is flagged (+10)",
+      body: "<h1>News</h1><script>Notification.requestPermission();</script>" },
+    { host: "perm-e.example.test", click: false, expect: (r) => r.reasons.length === 0 && r.kinds.length === 0,
+      name: "Ordinary page has no permission signal",
+      body: "<h1>Hello</h1>" }
+  ];
+  for (const c of permCases) {
+    const url = `https://${c.host}/`;
+    const pg = await context.newPage();
+    await pg.route(url, (route) => route.fulfill({ contentType: "text/html", body: `<!doctype html><title>${c.host}</title><body>${c.body}</body>` }));
+    await pg.goto(url, { waitUntil: "load" }).catch(() => {});
+    await sleep(1500);
+    if (c.click) {
+      await pg.click("#b");
+      await sleep(500);
+    }
+    await sleep(4500);
+    const res = await worker.evaluate(async (u) => {
+      const tabs = await chrome.tabs.query({});
+      const tab = tabs.find((t) => t.url === u);
+      const scan = tab ? await getTabScan(tab.id) : null;
+      const page = scan && scan.result && scan.result.pageResult;
+      return page ? { reasons: page.reasons.filter((x) => /permission|access|notification|camera|microphone|asked|login page/i.test(x) && !/password field/.test(x)), kinds: (page.permissionRequests || []).map((x) => x.kind) } : null;
+    }, url);
+    check(c.name, res && c.expect(res), JSON.stringify(res));
+    await pg.close();
+  }
+
   // Flow 5: extension pages load without script errors.
   for (const name of ["popup.html", "options.html", "history.html", "dashboard.html"]) {
     const ext = await context.newPage();

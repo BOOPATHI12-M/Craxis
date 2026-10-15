@@ -253,11 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function isLocalUrl(url) {
     try {
       const h = new URL(url).hostname.toLowerCase().replace(/^\[|\]$/g, "");
-      return (
-        h === "localhost" || h.endsWith(".localhost") || h === "::1" ||
-        /^127\./.test(h) || /^10\./.test(h) || /^192\.168\./.test(h) ||
-        /^169\.254\./.test(h) || /^172\.(1[6-9]|2\d|3[01])\./.test(h)
-      );
+      return h === "localhost" || h.endsWith(".localhost") || h === "::1" || /^127\./.test(h);
     } catch (e) {
       return false;
     }

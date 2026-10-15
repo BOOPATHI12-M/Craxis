@@ -3,6 +3,9 @@
 ## 1.1.0 - 2026-10-15
 
 ### Added
+- Unexpected permission requests: pages that ask for the camera, microphone, screen, location or clipboard without any user action (+20), login pages that ask at all (+10), notifications on load (+10), and cross-domain frames allowed to use the camera or microphone (+10). A rescan runs when a request happens after the first scan. New test page TC11.
+- "View details" on the in-page banner now opens the scan's detail view in a new tab instead of showing an alert.
+- Dashboard separates "not applied (local address)" from "backend unavailable" and history shows the reason.
 - Blocking warning page for DANGEROUS sites, with Go back, Report as safe and a delayed Proceed anyway.
 - Settings page: scan and block switches, risk thresholds, backend address, optional domain intelligence and a trusted-site list.
 - "Trust this site" button in the popup and a built-in list of 1000 trusted domains (shared hosting platforms excluded).

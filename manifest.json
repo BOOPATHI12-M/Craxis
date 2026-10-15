@@ -39,6 +39,18 @@
         "https://*/*"
       ],
       "js": [
+        "permission-watch.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
         "shared/config.js",
         "shared/scoring.js",
         "content.js"
