@@ -77,3 +77,10 @@ ml/model/*.corrupt
 # Large third-party training data and duplicate model copies in ml/source
 ml/source/*.csv
 ml/source/*.joblib
+
+# Experimental PhreshPhish-derived data (real browsing URLs, keep local)
+ml/dataset/experimental_phreshphish.csv
+ml/source/*.parquet
+
+# Candidate models are large and experimental
+ml/model/candidate_*.pkl

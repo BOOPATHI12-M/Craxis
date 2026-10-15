@@ -12,52 +12,52 @@
   <div class="container">
     <!-- Header Section -->
     <header class="header">
-      <div class="shield-icon">🛡️</div>
+      <svg class="shield-icon" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 8.2-8 9-4.8-.8-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
       <h1 class="title">AI Phishing Guard</h1>
-      <p class="subtitle">Advanced Phishing Detection Scanner</p>
+      <p class="subtitle">Checks the page you are on for phishing signs</p>
     </header>
 
     <!-- Main Action Area -->
     <main class="main-content">
-      <div class="btn-group">
-        <button id="scanBtn" class="scan-btn">Scan Website</button>
-        <button id="historyBtn" class="history-btn">🕘 History</button>
-        <button id="dashboardBtn" class="history-btn">📊 Dashboard</button>
-      </div>
-      <div class="btn-group">
-        <button id="trustBtn" class="history-btn">Trust this site</button>
-        <button id="optionsBtn" class="history-btn">⚙ Settings</button>
-      </div>
+      <button id="scanBtn" class="scan-btn" type="button">Scan this website</button>
+      <nav class="icon-row" aria-label="More actions">
+        <button id="trustBtn" class="history-btn" type="button">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <span>Trust site</span>
+        </button>
+        <button id="historyBtn" class="history-btn" type="button">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span>History</span>
+        </button>
+        <button id="dashboardBtn" class="history-btn" type="button">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+          <span>Stats</span>
+        </button>
+        <button id="optionsBtn" class="history-btn" type="button" aria-label="Settings">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
 
       <!-- Result Container -->
       <div id="resultBox" class="result-box">
 
-        <!-- Automatic Scan Banner -->
-        <div class="auto-scan-status-box">
-          <span class="auto-scan-badge">AUTOMATIC SCAN</span>
-          <span id="autoScanStateText" class="auto-scan-state">Status: Active Tab Ready</span>
-        </div>
-
-        <!-- 1. Website URL -->
-        <div class="info-group">
-          <span class="label">Target Website:</span>
-          <p id="urlText" class="url-text">Analyzing active tab...</p>
-        </div>
-
-        <!-- 2. Final Status & Actionable Recommendation -->
-        <div class="info-group">
+        <!-- 1. Verdict (first thing the user sees) -->
+        <section class="verdict" aria-live="polite">
           <div class="status-header">
-            <span class="label">Security Classification:</span>
-            <div id="statusBadge" class="status-badge status-default">Ready</div>
+            <span class="label">Verdict</span>
+            <div id="statusBadge" class="status-badge status-default" role="status">Ready</div>
           </div>
           <div id="recommendationBox" class="recommendation-box rec-default">
             <p id="recommendationText">Website security analysis loaded.</p>
           </div>
-        </div>
+          <p id="urlText" class="url-text">Analyzing active tab...</p>
+          <p class="scan-state"><span class="auto-scan-badge">AUTO</span> <span id="autoScanStateText" class="auto-scan-state">Status: Active Tab Ready</span></p>
+        </section>
 
         <!-- 3. Detection Summary Checklist (Grouped by Category & Severities) -->
         <div class="info-group">
-          <span class="label">Grouped Detection Summary:</span>
+          <span class="label">What we found</span>
           <ul id="summaryChecklist" class="summary-checklist">
             <li class="check-item check-neutral"><span>Scan in progress...</span></li>
           </ul>
@@ -65,40 +65,43 @@
 
         <!-- 4. Weighted Score Fusion Breakdown -->
         <div class="info-group">
-          <span class="label">Score Breakdown (Weighted Fusion):</span>
+          <span class="label">Risk score</span>
           <div class="scores-grid">
             <div class="score-card">
-              <span class="score-card-label">URL (30%)</span>
+              <span class="score-card-label">Address</span>
               <span id="urlScoreText" class="score-card-value">-</span>
             </div>
             <div class="score-card">
-              <span class="score-card-label">Page (20%)</span>
+              <span class="score-card-label">Page</span>
               <span id="webpageScoreText" class="score-card-value">-</span>
             </div>
             <div class="score-card">
-              <span class="score-card-label">AI (50%)</span>
+              <span class="score-card-label">AI check</span>
               <span id="aiRiskScoreBreakdownText" class="score-card-value">-</span>
             </div>
             <div class="score-card highlight-card">
-              <span class="score-card-label">Final Score</span>
+              <span class="score-card-label">Total</span>
               <span id="finalScoreText" class="score-card-value">- / 100</span>
             </div>
           </div>
+        </div>
 
+        <details class="report-details tech-details">
+          <summary class="details-header">Technical details</summary>
+          <div class="details-body">
           <!-- Score Formula Explanation -->
           <div class="calc-explanation-box">
-            <span class="calc-title">How this score was calculated:</span>
+            <span class="calc-title">How the score is calculated</span>
             <div class="calc-row"><span>URL Contribution (30%):</span> <strong id="urlCalcText">-</strong></div>
             <div class="calc-row"><span>Page Contribution (20%):</span> <strong id="webpageCalcText">-</strong></div>
             <div class="calc-row"><span>AI Contribution (50%):</span> <strong id="aiCalcText">-</strong></div>
             <div class="calc-row total-row"><span>Combined Final Risk:</span> <strong id="finalCalcText">- /
                 100</strong></div>
           </div>
-        </div>
 
         <!-- 5. Collapsible Section: URL Analysis -->
-        <details class="report-details" open>
-          <summary class="details-header">🌐 1. URL & Domain Structure Indicators</summary>
+        <details class="report-details">
+          <summary class="details-header">Web address checks</summary>
           <div class="details-body">
             <ul id="urlReasonsList" class="reasons-list">
               <li class="no-reasons">Analyzing URL...</li>
@@ -107,8 +110,8 @@
         </details>
 
         <!-- 6. Collapsible Section: Webpage DOM Analysis -->
-        <details class="report-details" open>
-          <summary class="details-header">📄 2. Webpage Structural Indicators</summary>
+        <details class="report-details">
+          <summary class="details-header">Page structure checks</summary>
           <div class="details-body">
             <div id="webpageAnalysisBox" class="metrics-box">
               <div class="analysis-row"><span>Page Title:</span> <strong id="pageTitleText">-</strong></div>
@@ -128,8 +131,8 @@
         </details>
 
         <!-- 7. Collapsible Section: Random Forest AI Model Analysis -->
-        <details class="report-details" open>
-          <summary class="details-header">🤖 3. Model Analysis (Random Forest)</summary>
+        <details class="report-details">
+          <summary class="details-header">AI model result</summary>
           <div class="details-body">
             <div id="aiOfflineNote" class="ai-offline-note" hidden>
               <span id="aiOfflineText">AI server not reachable.</span>
@@ -153,7 +156,7 @@
 
         <!-- 8. Collapsible Section: About the AI Model & Top Features -->
         <details class="report-details">
-          <summary class="details-header">ℹ️ Model Information & Top Features</summary>
+          <summary class="details-header">About the AI model</summary>
           <div class="details-body">
             <div class="metrics-box">
               <div class="analysis-row"><span>Algorithm:</span> <strong>Random Forest Classifier</strong></div>
@@ -169,6 +172,9 @@
               is not proof of causation for a single website.
             </p>
           </div>
+        </details>
+
+                  </div>
         </details>
 
         <!-- Disclaimer Note -->

@@ -1,0 +1,215 @@
+{
+  "parameters": {
+    "input": "C:\\Users\\BOOPAT~1\\AppData\\Local\\Temp/phresh_full/phreshphish_urls.parquet",
+    "cap": 20,
+    "min_phish": 0.1,
+    "max_phish": 0.9,
+    "eval_percent": 20,
+    "seed": 42
+  },
+  "steps": [
+    {
+      "step": "cleaning (scheme, whitespace, parse, host)",
+      "rows_before": 666315,
+      "rows_after": 660556,
+      "removed": 5759,
+      "note": "{'no_scheme': 5741, 'whitespace': 17, 'unparseable': 1}"
+    },
+    {
+      "step": "months with both classes",
+      "rows_before": 660556,
+      "rows_after": 520451,
+      "removed": 140105,
+      "note": "8 months kept"
+    },
+    {
+      "step": "remove URLs with both labels",
+      "rows_before": 520451,
+      "rows_after": 520440,
+      "removed": 11,
+      "note": "3 keys"
+    },
+    {
+      "step": "remove normalised duplicates",
+      "rows_before": 520440,
+      "rows_after": 509014,
+      "removed": 11426,
+      "note": ""
+    },
+    {
+      "step": "remove URLs already in current dataset",
+      "rows_before": 509014,
+      "rows_after": 508314,
+      "removed": 700,
+      "note": ""
+    },
+    {
+      "step": "cap 20 rows per site and label",
+      "rows_before": 508314,
+      "rows_after": 329140,
+      "removed": 179174,
+      "note": "411 sites hold both labels"
+    }
+  ],
+  "input_rows": 666315,
+  "rejected_by_cleaning": {
+    "no_scheme": 5741,
+    "whitespace": 17,
+    "unparseable": 1
+  },
+  "months_kept": [
+    "2024-08",
+    "2024-09",
+    "2024-10",
+    "2025-06",
+    "2025-07",
+    "2025-08",
+    "2025-09",
+    "2025-10"
+  ],
+  "months_excluded": {
+    "2024-07": {
+      "rows": 53552,
+      "phish_share": 0.997
+    },
+    "2024-11": {
+      "rows": 15585,
+      "phish_share": 1.0
+    },
+    "2024-12": {
+      "rows": 7868,
+      "phish_share": 1.0
+    },
+    "2025-01": {
+      "rows": 23003,
+      "phish_share": 1.0
+    },
+    "2025-02": {
+      "rows": 9324,
+      "phish_share": 1.0
+    },
+    "2025-03": {
+      "rows": 5678,
+      "phish_share": 1.0
+    },
+    "2025-04": {
+      "rows": 2800,
+      "phish_share": 1.0
+    },
+    "2025-11": {
+      "rows": 21278,
+      "phish_share": 0.902
+    },
+    "2025-12": {
+      "rows": 1017,
+      "phish_share": 0.0
+    }
+  },
+  "sites_forced_eval_by_current_test": 3600,
+  "sites_forced_train_by_current_train": 13831,
+  "final": {
+    "eval": {
+      "rows": 66319,
+      "benign": 46474,
+      "phishing": 19845,
+      "sites": 37973
+    },
+    "train": {
+      "rows": 262821,
+      "benign": 184941,
+      "phishing": 77880,
+      "sites": 150709
+    }
+  },
+  "balanced_subset": {
+    "eval": {
+      "rows": 22752,
+      "benign": 11376,
+      "phishing": 11376,
+      "sites": 15958
+    },
+    "train": {
+      "rows": 90568,
+      "benign": 45284,
+      "phishing": 45284,
+      "sites": 63515
+    }
+  },
+  "final_rows": 329140,
+  "balanced_rows": 113320,
+  "mixed_site_rows": 4827,
+  "univariate_shortcuts": {
+    "all_rows": [
+      [
+        "path_length",
+        0.792
+      ],
+      [
+        "path_depth",
+        0.783
+      ],
+      [
+        "url_length",
+        0.697
+      ],
+      [
+        "hostname_entropy",
+        0.697
+      ],
+      [
+        "on_shared_hosting",
+        0.659
+      ],
+      [
+        "hostname_length",
+        0.657
+      ]
+    ],
+    "balanced_subset": [
+      [
+        "digit_count",
+        0.652
+      ],
+      [
+        "hostname_entropy",
+        0.638
+      ],
+      [
+        "hostname_hyphen_count",
+        0.632
+      ],
+      [
+        "dot_count",
+        0.631
+      ],
+      [
+        "hostname_length",
+        0.626
+      ],
+      [
+        "on_shared_hosting",
+        0.624
+      ]
+    ]
+  },
+  "class_shape_comparison": [
+    {
+      "subset": "all_rows",
+      "benign_with_path_pct": 89.0,
+      "benign_deep_pct": 66.0,
+      "benign_www_pct": 56.8,
+      "phishing_with_path_pct": 43.3,
+      "phishing_deep_pct": 20.1,
+      "phishing_www_pct": 9.7
+    },
+    {
+      "subset": "balanced_subset",
+      "benign_with_path_pct": 70.4,
+      "benign_deep_pct": 34.6,
+      "benign_www_pct": 16.7,
+      "phishing_with_path_pct": 70.4,
+      "phishing_deep_pct": 34.6,
+      "phishing_www_pct": 16.7
+    }
+  ]
+}
