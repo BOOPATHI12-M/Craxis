@@ -1,0 +1,4 @@
+# Model files are binary. Never let an editor or git change line endings or encoding.
+*.pkl binary
+*.joblib binary
+*.png binary

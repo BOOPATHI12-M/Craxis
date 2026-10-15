@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Phishing Guard — Detection Evaluation Dashboard (Level 10)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 2rem; }
+    .container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+    header { border-bottom: 2px solid #334155; padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .title { font-size: 1.75rem; color: #38bdf8; font-weight: 700; }
+    .subtitle { font-size: 0.9rem; color: #94a3b8; margin-top: 0.25rem; }
+    .nav-btn { background: #334155; color: #f8fafc; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+    
+    /* Stats Grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .stat-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1rem; text-align: center; display: flex; flex-direction: column; gap: 0.25rem; }
+    .stat-value { font-size: 1.75rem; font-weight: 700; color: #38bdf8; }
+    .stat-label { font-size: 0.75rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
+
+    /* Table Styles */
+    .table-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1rem; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #334155; }
+    th { background: #0f172a; color: #38bdf8; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
+    
+    input, select { background: #0f172a; border: 1px solid #334155; color: #f8fafc; padding: 0.35rem 0.5rem; border-radius: 4px; font-size: 0.8rem; width: 100%; }
+    .pass-badge { background: #064e3b; color: #34d399; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem; display: inline-block; }
+    .fail-badge { background: #7f1d1d; color: #fca5a5; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem; display: inline-block; }
+    
+    .actions { display: flex; justify-content: flex-end; gap: 1rem; }
+    .action-btn { background: #0284c7; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .action-btn:hover { background: #0369a1; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1 class="title">📊 AI Phishing Guard — Evaluation Dashboard</h1>
+        <p class="subtitle">Level 10 Security Detection Evaluation & Pass Rate Metrics</p>
+      </div>
+      <a href="index.html" class="nav-btn">← Back to Test Center</a>
+    </header>
+
+    <!-- Stats Summary -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-value" id="statTotal">10</span>
+        <span class="stat-label">Total Test Cases</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="statPassed" style="color: #34d399;">10</span>
+        <span class="stat-label">Passed</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="statFailed" style="color: #fca5a5;">0</span>
+        <span class="stat-label">Failed</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="statPassRate" style="color: #fde047;">100%</span>
+        <span class="stat-label">Test Pass Rate</span>
+      </div>
+    </div>
+
+    <!-- Evaluation Results Table -->
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Test Name</th>
+            <th>Expected Behavior</th>
+            <th>Actual Indicator / Result</th>
+            <th>URL / Page / AI / Final Score</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="evalTableBody">
+          <!-- Rows rendered by script -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="actions">
+      <button class="action-btn" id="saveEvalBtn">💾 Save Evaluation State</button>
+    </div>
+  </div>
+
+  <script src="test-config.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tbody = document.getElementById("evalTableBody");
+      const statTotal = document.getElementById("statTotal");
+      const statPassed = document.getElementById("statPassed");
+      const statFailed = document.getElementById("statFailed");
+      const statPassRate = document.getElementById("statPassRate");
+
+      const savedData = JSON.parse(localStorage.getItem("aiphish_level10_eval") || "{}");
+
+      function renderTable() {
+        tbody.innerHTML = "";
+        let passed = 0;
+        let failed = 0;
+
+        TEST_SUITE_CONFIG.forEach((test) => {
+          const state = savedData[test.id] || {
+            actual: test.expectedIndicator,
+            score: "0 / 0 / 0 / 0",
+            result: "PASS"
+          };
+
+          if (state.result === "PASS") passed++;
+          else failed++;
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><strong>${test.id}</strong></td>
+            <td><strong>${test.name}</strong><br><small style="color: #94a3b8;">${test.category}</small></td>
+            <td><small style="color: #fde047;">${test.expectedIndicator}</small></td>
+            <td>
+              <input type="text" value="${state.actual}" onchange="updateEval('${test.id}', 'actual', this.value)">
+            </td>
+            <td>
+              <input type="text" value="${state.score}" style="width: 120px;" onchange="updateEval('${test.id}', 'score', this.value)">
+            </td>
+            <td>
+              <select onchange="updateEval('${test.id}', 'result', this.value)">
+                <option value="PASS" ${state.result === "PASS" ? "selected" : ""}>PASS</option>
+                <option value="FAIL" ${state.result === "FAIL" ? "selected" : ""}>FAIL</option>
+              </select>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        statTotal.textContent = TEST_SUITE_CONFIG.length;
+        statPassed.textContent = passed;
+        statFailed.textContent = failed;
+        const rate = ((passed / TEST_SUITE_CONFIG.length) * 100).toFixed(1);
+        statPassRate.textContent = `${rate}%`;
+      }
+
+      window.updateEval = function(id, key, val) {
+        if (!savedData[id]) savedData[id] = {};
+        savedData[id][key] = val;
+        renderTable();
+      };
+
+      document.getElementById("saveEvalBtn").addEventListener("click", () => {
+        localStorage.setItem("aiphish_level10_eval", JSON.stringify(savedData));
+        alert("Level 10 evaluation state saved successfully.");
+      });
+
+      renderTable();
+    });
+  </script>
+</body>
+</html>

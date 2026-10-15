@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Phishing Guard</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header class="header">
+      <div class="shield-icon">🛡️</div>
+      <h1 class="title">AI Phishing Guard</h1>
+      <p class="subtitle">Advanced Phishing Detection Scanner</p>
+    </header>
+
+    <!-- Main Action Area -->
+    <main class="main-content">
+      <div class="btn-group">
+        <button id="scanBtn" class="scan-btn">Scan Website</button>
+        <button id="historyBtn" class="history-btn">🕘 History</button>
+        <button id="dashboardBtn" class="history-btn">📊 Dashboard</button>
+      </div>
+      <div class="btn-group">
+        <button id="trustBtn" class="history-btn">Trust this site</button>
+        <button id="optionsBtn" class="history-btn">⚙ Settings</button>
+      </div>
+
+      <!-- Result Container -->
+      <div id="resultBox" class="result-box">
+
+        <!-- Automatic Scan Banner -->
+        <div class="auto-scan-status-box">
+          <span class="auto-scan-badge">AUTOMATIC SCAN</span>
+          <span id="autoScanStateText" class="auto-scan-state">Status: Active Tab Ready</span>
+        </div>
+
+        <!-- 1. Website URL -->
+        <div class="info-group">
+          <span class="label">Target Website:</span>
+          <p id="urlText" class="url-text">Analyzing active tab...</p>
+        </div>
+
+        <!-- 2. Final Status & Actionable Recommendation -->
+        <div class="info-group">
+          <div class="status-header">
+            <span class="label">Security Classification:</span>
+            <div id="statusBadge" class="status-badge status-default">Ready</div>
+          </div>
+          <div id="recommendationBox" class="recommendation-box rec-default">
+            <p id="recommendationText">Website security analysis loaded.</p>
+          </div>
+        </div>
+
+        <!-- 3. Detection Summary Checklist (Grouped by Category & Severities) -->
+        <div class="info-group">
+          <span class="label">Grouped Detection Summary:</span>
+          <ul id="summaryChecklist" class="summary-checklist">
+            <li class="check-item check-neutral"><span>Scan in progress...</span></li>
+          </ul>
+        </div>
+
+        <!-- 4. Weighted Score Fusion Breakdown -->
+        <div class="info-group">
+          <span class="label">Score Breakdown (Weighted Fusion):</span>
+          <div class="scores-grid">
+            <div class="score-card">
+              <span class="score-card-label">URL (30%)</span>
+              <span id="urlScoreText" class="score-card-value">-</span>
+            </div>
+            <div class="score-card">
+              <span class="score-card-label">Page (20%)</span>
+              <span id="webpageScoreText" class="score-card-value">-</span>
+            </div>
+            <div class="score-card">
+              <span class="score-card-label">AI (50%)</span>
+              <span id="aiRiskScoreBreakdownText" class="score-card-value">-</span>
+            </div>
+            <div class="score-card highlight-card">
+              <span class="score-card-label">Final Score</span>
+              <span id="finalScoreText" class="score-card-value">- / 100</span>
+            </div>
+          </div>
+
+          <!-- Score Formula Explanation -->
+          <div class="calc-explanation-box">
+            <span class="calc-title">How this score was calculated:</span>
+            <div class="calc-row"><span>URL Contribution (30%):</span> <strong id="urlCalcText">-</strong></div>
+            <div class="calc-row"><span>Page Contribution (20%):</span> <strong id="webpageCalcText">-</strong></div>
+            <div class="calc-row"><span>AI Contribution (50%):</span> <strong id="aiCalcText">-</strong></div>
+            <div class="calc-row total-row"><span>Combined Final Risk:</span> <strong id="finalCalcText">- /
+                100</strong></div>
+          </div>
+        </div>
+
+        <!-- 5. Collapsible Section: URL Analysis -->
+        <details class="report-details" open>
+          <summary class="details-header">🌐 1. URL & Domain Structure Indicators</summary>
+          <div class="details-body">
+            <ul id="urlReasonsList" class="reasons-list">
+              <li class="no-reasons">Analyzing URL...</li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- 6. Collapsible Section: Webpage DOM Analysis -->
+        <details class="report-details" open>
+          <summary class="details-header">📄 2. Webpage Structural Indicators</summary>
+          <div class="details-body">
+            <div id="webpageAnalysisBox" class="metrics-box">
+              <div class="analysis-row"><span>Page Title:</span> <strong id="pageTitleText">-</strong></div>
+              <div class="analysis-row"><span>Password Fields:</span> <strong id="passwordFieldsText">0</strong></div>
+              <div class="analysis-row"><span>Forms Count:</span> <strong id="formsText">0</strong></div>
+              <div class="analysis-row"><span>External Forms:</span> <strong id="extFormsText">0</strong></div>
+              <div class="analysis-row"><span>External Links:</span> <strong id="extLinksText">0</strong></div>
+              <div class="analysis-row"><span>Suspicious Links:</span> <strong id="suspLinksText">0</strong></div>
+              <div class="analysis-row"><span>Hidden Links:</span> <strong id="hiddenLinksText">0</strong></div>
+              <div class="analysis-row"><span>External iframes:</span> <strong id="extIframesText">0</strong></div>
+              <div class="analysis-row"><span>External Scripts:</span> <strong id="extScriptsText">0</strong></div>
+            </div>
+            <ul id="webpageReasonsList" class="reasons-list margin-top-4">
+              <li class="no-reasons">Analyzing DOM structure...</li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- 7. Collapsible Section: Random Forest AI Model Analysis -->
+        <details class="report-details" open>
+          <summary class="details-header">🤖 3. Model Analysis (Random Forest)</summary>
+          <div class="details-body">
+            <div id="aiOfflineNote" class="ai-offline-note" hidden>
+              <span id="aiOfflineText">AI server not reachable.</span>
+              <button id="retryAiBtn" class="retry-btn">Retry</button>
+            </div>
+            <div class="metrics-box">
+              <div class="analysis-row"><span>Model Prediction:</span> <strong id="aiPredictionText">-</strong></div>
+              <div class="analysis-row"><span>Est. Phishing Probability:</span> <strong id="aiProbText">-</strong></div>
+              <div class="analysis-row"><span>Est. Legitimate Probability:</span> <strong
+                  id="aiLegitProbText">-</strong></div>
+              <div class="analysis-row"><span>AI Risk Score:</span> <strong id="aiScoreText">- / 100</strong></div>
+              <div class="analysis-row"><span>Model Version:</span> <strong id="modelVersionText">-</strong>
+              </div>
+            </div>
+            <p class="ai-explanatory-note">
+              Note: This is a model-estimated phishing probability based on structural URL & webpage features learned
+              from dataset training.
+            </p>
+          </div>
+        </details>
+
+        <!-- 8. Collapsible Section: About the AI Model & Top Features -->
+        <details class="report-details">
+          <summary class="details-header">ℹ️ Model Information & Top Features</summary>
+          <div class="details-body">
+            <div class="metrics-box">
+              <div class="analysis-row"><span>Algorithm:</span> <strong>Random Forest Classifier</strong></div>
+              <div class="analysis-row"><span>Version:</span> <strong id="modelInfoVersion">-</strong></div>
+              <div class="analysis-row"><span>Input Features:</span> <strong id="modelInfoFeatures">-</strong></div>
+            </div>
+            <span class="label margin-top-4">Top Model Inputs (Feature Importances):</span>
+            <ul id="topFeaturesList" class="features-list">
+              <li>Loading feature importances...</li>
+            </ul>
+            <p class="ai-explanatory-note">
+              Feature importances indicate how predictive each input feature was during model training. High importance
+              is not proof of causation for a single website.
+            </p>
+          </div>
+        </details>
+
+        <!-- Disclaimer Note -->
+        <p class="disclaimer-note">
+          This analysis is based on URL characteristics, webpage structure, and machine-learning predictions. It may
+          produce false positives and false negatives.
+        </p>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- JavaScript file -->
+  <script src="shared/config.js"></script>
+  <script src="shared/scoring.js"></script>
+  <script src="shared/settings.js"></script>
+  <script src="shared/api.js"></script>
+  <script src="popup.js"></script>
+</body>
+
+</html>

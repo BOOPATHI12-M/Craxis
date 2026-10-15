@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Account Verification Test Page — AI Phishing Guard (TC06)</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; max-width: 800px; margin: 0 auto; }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1.5rem; margin-top: 1rem; }
+    .tag { background: #78350f; color: #fde047; border: 1px solid #f59e0b; padding: 0.25rem 0.75rem; border-radius: 4px; font-weight: 700; font-size: 0.85rem; }
+    a { color: #38bdf8; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <span class="tag">TC06 — SUSPICIOUS KEYWORD TEST</span>
+  <h1>Sensitive Security Keyword Detection Test</h1>
+  <p>This is a harmless local test page to evaluate keyword indicator detection (login, verify, account) in <strong>AI Phishing Guard</strong>.</p>
+
+  <div class="card">
+    <h2>Rule Explanation</h2>
+    <p>Phishing pages often contain high-frequency security keywords such as <code>login</code>, <code>verify</code>, <code>account</code>, <code>password</code>, and <code>secure</code> in their page title and URL path.</p>
+    <p>Expected Indicator: <code>Page title contains a sensitive security-related keyword (+5)</code></p>
+    <p>Return to <a href="index.html">Local Test Center Dashboard</a>.</p>
+  </div>
+</body>
+</html>

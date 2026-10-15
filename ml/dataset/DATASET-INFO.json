@@ -1,0 +1,16 @@
+{
+  "generated_on": "2026-10-15",
+  "seed": 42,
+  "phishing": {
+    "source": "http://data.phishtank.com/data/online-valid.csv",
+    "count": 15000,
+    "available": 63925
+  },
+  "legitimate": {
+    "source": "https://tranco-list.eu/top-1m.csv.zip",
+    "count": 15000,
+    "tranco_depth": 100000,
+    "note": "Real domains; path shapes copied from phishing URLs with letters and digits randomised."
+  },
+  "unique_phishing_hosts": 8449
+}

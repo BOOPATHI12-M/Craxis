@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Phishing Guard Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>🛡️ AI Phishing Guard Settings</h1>
+      <p class="muted">Changes are saved to your browser profile and apply immediately.</p>
+    </header>
+
+    <section class="panel">
+      <h2>Scanning</h2>
+      <label class="row">
+        <input type="checkbox" id="autoScan">
+        <span><strong>Scan pages automatically</strong><small>Scan every http/https page when it finishes loading.</small></span>
+      </label>
+      <label class="row">
+        <input type="checkbox" id="blockDangerous">
+        <span><strong>Block dangerous pages</strong><small>Show a full warning page before a DANGEROUS site is displayed.</small></span>
+      </label>
+    </section>
+
+    <section class="panel">
+      <h2>Risk thresholds</h2>
+      <div class="grid">
+        <label>Suspicious from score
+          <input type="number" id="suspiciousThreshold" min="1" max="99" step="1">
+        </label>
+        <label>Dangerous from score
+          <input type="number" id="dangerousThreshold" min="2" max="100" step="1">
+        </label>
+      </div>
+      <p class="muted">Default is 30 and 60. Dangerous must be higher than suspicious.</p>
+    </section>
+
+    <section class="panel">
+      <h2>AI backend</h2>
+      <label>Backend address
+        <input type="url" id="backendUrl" placeholder="http://127.0.0.1:5000">
+      </label>
+      <div class="inline">
+        <button id="testBackendBtn" class="btn secondary" type="button">Test connection</button>
+        <span id="backendStatus" class="status" role="status"></span>
+      </div>
+      <label class="row">
+        <input type="checkbox" id="useIntel">
+        <span><strong>Look up domain age and certificate (optional)</strong>
+          <small>Sends the hostname from your local backend to a public registry (RDAP) and to the site itself.
+            The backend must also have AIPHISH_ENABLE_INTEL=1 set. Off by default.</small></span>
+      </label>
+    </section>
+
+    <section class="panel">
+      <h2>Trusted sites</h2>
+      <p class="muted">Sites listed here are never blocked and their risk score is capped. Subdomains are included.</p>
+      <div class="inline">
+        <input type="text" id="allowlistInput" placeholder="example.com" autocomplete="off">
+        <button id="addAllowBtn" class="btn secondary" type="button">Add</button>
+      </div>
+      <ul id="allowlist" class="allowlist"></ul>
+    </section>
+
+    <div class="footer">
+      <button id="saveBtn" class="btn primary" type="button">Save settings</button>
+      <button id="resetBtn" class="btn secondary" type="button">Restore defaults</button>
+      <span id="saveStatus" class="status" role="status"></span>
+    </div>
+  </main>
+
+  <script src="shared/settings.js"></script>
+  <script src="shared/api.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

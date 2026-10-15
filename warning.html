@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dangerous website blocked - AI Phishing Guard</title>
+  <link rel="stylesheet" href="warning.css">
+</head>
+<body>
+  <main class="card" role="alertdialog" aria-labelledby="title" aria-describedby="summary">
+    <div class="icon" aria-hidden="true">🛑</div>
+    <h1 id="title">Dangerous website blocked</h1>
+    <p id="summary" class="summary">
+      AI Phishing Guard stopped this page from loading because it looks like a phishing attempt.
+    </p>
+
+    <div class="target-box">
+      <span class="label">Blocked address</span>
+      <code id="targetText" class="target">-</code>
+      <span class="score">Risk score: <strong id="scoreText">-</strong> / 100</span>
+    </div>
+
+    <section class="reasons-box">
+      <span class="label">Why it was blocked</span>
+      <ul id="reasonsList" class="reasons"></ul>
+    </section>
+
+    <div class="actions">
+      <button id="safetyBtn" class="btn primary">Go back to safety</button>
+      <button id="trustBtn" class="btn secondary">Report as safe</button>
+      <button id="proceedBtn" class="btn danger" disabled>Proceed anyway (5)</button>
+    </div>
+
+    <p class="note">
+      Proceeding is remembered for this site until you close the browser. "Report as safe" adds the site to your
+      trusted list so it is never blocked again.
+    </p>
+  </main>
+  <script src="warning.js"></script>
+</body>
+</html>

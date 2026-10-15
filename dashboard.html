@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Phishing Guard — Security Intelligence Dashboard (Level 14)</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title">
+        <div class="shield-icon">📊</div>
+        <div>
+          <h1 class="title">AI Phishing Guard</h1>
+          <p class="subtitle">Security Intelligence Dashboard & Real-Time Overview (Level 14)</p>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <a href="history.html" class="nav-btn">🕘 Scan History</a>
+        <a href="test-pages/model-evaluation.html" class="nav-btn secondary">📊 ML Evaluation</a>
+        <button id="closeBtn" class="nav-btn">← Close</button>
+      </div>
+    </header>
+
+    <!-- Top Summary Metric Cards -->
+    <div id="summaryCardsGrid" class="summary-grid">
+      <div class="card stat-card">
+        <span id="statTotalScans" class="stat-value">0</span>
+        <span class="stat-label">Total Scans</span>
+      </div>
+      <div class="card stat-card">
+        <span id="statSafeScans" class="stat-value text-safe">0</span>
+        <span class="stat-label">Safe (0-29)</span>
+      </div>
+      <div class="card stat-card">
+        <span id="statSuspiciousScans" class="stat-value text-suspicious">0</span>
+        <span class="stat-label">Suspicious (30-59)</span>
+      </div>
+      <div class="card stat-card">
+        <span id="statDangerousScans" class="stat-value text-dangerous">0</span>
+        <span class="stat-label">Dangerous (60+)</span>
+      </div>
+      <div class="card stat-card">
+        <span id="statAvgRisk" class="stat-value text-highlight">0 / 100</span>
+        <span class="stat-label">Average Risk Score</span>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Content (Hidden if empty) -->
+    <div id="dashboardContent" class="dashboard-content">
+      
+      <!-- Row 1: Risk Classification & Risk Score Ranges -->
+      <div class="two-col">
+        <!-- Classification Distribution -->
+        <div class="card section-card">
+          <h2 class="section-title">🛡️ Risk Classification Distribution</h2>
+          <div id="classDistBars" class="bars-container">
+            <!-- Rendered by dashboard.js -->
+          </div>
+        </div>
+
+        <!-- Risk Score Bins (0-20, 21-40, 41-60, 61-80, 81-100) -->
+        <div class="card section-card">
+          <h2 class="section-title">📊 Risk Score Bins</h2>
+          <div id="riskBinsBars" class="bars-container">
+            <!-- Rendered by dashboard.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Recent Risk Trend & AI Prediction Summary -->
+      <div class="two-col">
+        <!-- Risk Trend -->
+        <div class="card section-card">
+          <h2 class="section-title">📈 Chronological Risk Trend</h2>
+          <div id="riskTrendBox" class="trend-container">
+            <p style="font-size: 0.85rem; color: #94a3b8;">Analyzing scan history timeline...</p>
+          </div>
+        </div>
+
+        <!-- AI Prediction Summary -->
+        <div class="card section-card">
+          <h2 class="section-title">🤖 AI Model Predictions Summary</h2>
+          <div id="aiSummaryBox" class="ai-summary-grid">
+            <div class="ai-stat-card">
+              <span id="aiLegitCount" class="ai-stat-val text-safe">0</span>
+              <span class="ai-stat-lbl">LEGITIMATE</span>
+            </div>
+            <div class="ai-stat-card">
+              <span id="aiPhishCount" class="ai-stat-val text-dangerous">0</span>
+              <span class="ai-stat-lbl">PHISHING</span>
+            </div>
+            <div class="ai-stat-card">
+              <span id="aiUnavailCount" class="ai-stat-val text-muted">0</span>
+              <span class="ai-stat-lbl">UNAVAILABLE</span>
+            </div>
+          </div>
+          <p class="note-text">
+            Based on Random Forest ML model (Version 2.0) predictions recorded in local history.
+          </p>
+        </div>
+      </div>
+
+      <!-- Row 3: Common Detection Indicators -->
+      <div class="card section-card">
+        <h2 class="section-title">⚠️ Top Common Detection Indicators</h2>
+        <div id="indicatorsContainer" class="indicators-list">
+          <!-- Rendered by dashboard.js -->
+        </div>
+      </div>
+
+      <!-- Row 4: Top 5 Highest Risk Scans & Top 5 Recent Scans -->
+      <div class="two-col">
+        <!-- Highest Risk Scans -->
+        <div class="card section-card">
+          <h2 class="section-title">🚨 Top 5 Highest Risk Scanned Sites</h2>
+          <div id="highestRiskList" class="sites-list">
+            <!-- Rendered by dashboard.js -->
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card section-card">
+          <h2 class="section-title">🕒 Recent Scan Activity (Latest 5)</h2>
+          <div id="recentActivityList" class="sites-list">
+            <!-- Rendered by dashboard.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Overview Summary & Data Freshness -->
+      <div class="two-col">
+        <div class="card section-card">
+          <h2 class="section-title">🛡️ Security Overview</h2>
+          <ul class="info-list">
+            <li>Total websites analyzed: <strong id="healthTotal">0</strong></li>
+            <li>Potentially risky websites (Suspicious/Dangerous): <strong id="healthRisky" class="text-suspicious">0</strong></li>
+            <li>Safe websites: <strong id="healthSafe" class="text-safe">0</strong></li>
+            <li>Average risk score across all scans: <strong id="healthAvg">0 / 100</strong></li>
+          </ul>
+        </div>
+
+        <div class="card section-card">
+          <h2 class="section-title">🕒 Data Freshness & Status</h2>
+          <ul class="info-list">
+            <li>Dashboard last updated: <strong id="freshnessUpdated" style="color: #38bdf8;">-</strong></li>
+            <li>Latest scan recorded: <strong id="freshnessLatest" style="color: #38bdf8;">-</strong></li>
+            <li>Storage provider: <strong style="color: #38bdf8;">Chrome Local Extension Storage</strong></li>
+            <li>ML Evaluation Link: <a href="test-pages/model-evaluation.html" style="color: #38bdf8;">View Random Forest Metrics</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty State Container -->
+    <div id="emptyState" class="empty-state hidden">
+      <div class="empty-icon">🛡️</div>
+      <h2>No Security Analysis Data Yet</h2>
+      <p>Visit websites and run AI Phishing Guard scans to populate this Security Intelligence Dashboard.</p>
+    </div>
+
+    <!-- Privacy Disclaimer Footer -->
+    <footer class="privacy-note">
+      🔒 <strong>Privacy Statement:</strong> Dashboard data is generated strictly from locally stored security scan results. No passwords, cookies, OTPs, payment information, or complete page contents are used or stored.
+    </footer>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+{
+  "model": "Random Forest",
+  "version": "3.0",
+  "dataset": "phishing_urls_full.csv",
+  "total_samples": 30000,
+  "training_samples": 24706,
+  "testing_samples": 5294,
+  "dataset_distribution": {
+    "legitimate": 15000,
+    "phishing": 15000
+  },
+  "testing_distribution": {
+    "legitimate": 2998,
+    "phishing": 2296
+  },
+  "evaluation_method": "80/20 split grouped by domain (no site appears in both sets)",
+  "metrics": {
+    "accuracy": 0.8207,
+    "precision": 0.9055,
+    "recall": 0.6551,
+    "f1_score": 0.7602,
+    "roc_auc": 0.9237,
+    "false_positive_rate": 0.0524,
+    "recall_at_1pct_fpr": 0.4586
+  },
+  "confusion_matrix": {
+    "true_negative": 2841,
+    "false_positive": 157,
+    "false_negative": 792,
+    "true_positive": 1504
+  },
+  "feature_count": 32,
+  "top_features": [
+    {
+      "name": "hostname_length",
+      "importance": 0.1538
+    },
+    {
+      "name": "hostname_entropy",
+      "importance": 0.1343
+    },
+    {
+      "name": "path_length",
+      "importance": 0.0928
+    },
+    {
+      "name": "url_length",
+      "importance": 0.09
+    },
+    {
+      "name": "site_label_length",
+      "importance": 0.074
+    },
+    {
+      "name": "digit_count",
+      "importance": 0.0622
+    },
+    {
+      "name": "site_label_vowel_ratio",
+      "importance": 0.0519
+    },
+    {
+      "name": "path_depth",
+      "importance": 0.0425
+    }
+  ],
+  "cross_validation": {
+    "Random Forest": {
+      "mean_auc": 0.8478266073587196,
+      "std_auc": 0.06408978929159044
+    },
+    "Histogram Gradient Boosting": {
+      "mean_auc": 0.8274934397509268,
+      "std_auc": 0.0847642322024436
+    }
+  },
+  "previous_model": {
+    "model": "Previous Random Forest (20 features)",
+    "metrics": {
+      "accuracy": 0.5892,
+      "precision": 0.5278,
+      "recall": 0.5,
+      "f1_score": 0.5135,
+      "roc_auc": 0.6398,
+      "false_positive_rate": 0.3426,
+      "recall_at_1pct_fpr": 0.0179
+    },
+    "confusion_matrix": {
+      "true_negative": 1971,
+      "false_positive": 1027,
+      "false_negative": 1148,
+      "true_positive": 1148
+    }
+  },
+  "generated_at": "2026-10-15"
+}

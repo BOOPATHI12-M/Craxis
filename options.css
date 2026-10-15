@@ -1,0 +1,178 @@
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #f8fafc;
+  background-color: #0b1220;
+}
+
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  color: #7dd3fc;
+}
+
+.muted {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.panel {
+  margin-top: 18px;
+  padding: 16px 18px;
+  background-color: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.row input {
+  margin-top: 3px;
+}
+
+.row small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #94a3b8;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+input[type="number"],
+input[type="url"],
+input[type="text"] {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #f8fafc;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+}
+
+input:focus-visible,
+button:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+.inline {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.inline input[type="text"] {
+  margin-top: 0;
+}
+
+.btn {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #f8fafc;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn.primary {
+  background-color: #0284c7;
+}
+
+.btn.secondary {
+  background-color: #334155;
+}
+
+.btn:hover {
+  filter: brightness(1.12);
+}
+
+.status {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.status.ok {
+  color: #34d399;
+}
+
+.status.bad {
+  color: #fca5a5;
+}
+
+.allowlist {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.allowlist li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  background-color: #1e293b;
+  border-radius: 6px;
+}
+
+.allowlist button {
+  padding: 3px 8px;
+  font-size: 12px;
+  color: #fecaca;
+  background: transparent;
+  border: 1px solid #7f1d1d;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.footer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 22px;
+}
