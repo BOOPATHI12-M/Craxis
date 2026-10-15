@@ -160,14 +160,17 @@ async function runFlows(context, worker) {
   );
   await page.close();
 
-  // Flow 4: AI is not applied to local addresses; weights fall back to URL + page.
+  // Flow 4: local addresses get the AI answer too, shown but not counted in the score.
   await reset({});
   ({ page, found } = await openAndWait(context, worker, tc01));
-  check(
-    "Local address skips the AI model",
-    found && found.scan.result.hasAIData === false && found.scan.result.aiSkipped === true,
-    found ? JSON.stringify({ ai: found.scan.result.hasAIData, skipped: found.scan.result.aiSkipped }) : "no result"
-  );
+  {
+    const r = found && found.scan.result;
+    check(
+      "Local address shows the AI result but does not count it",
+      r && r.hasAIData === true && r.aiAdvisory === true && r.aiContrib === 0 && r.urlWeight === 0.6,
+      r ? JSON.stringify({ ai: r.hasAIData, advisory: r.aiAdvisory, contrib: r.aiContrib, urlWeight: r.urlWeight }) : "no result"
+    );
+  }
   await page.close();
 
   // Flow 6: permission requests. HTTPS is used because camera APIs do not exist

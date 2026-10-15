@@ -149,17 +149,17 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
     const trust = Scoring.trustStatus(details.url, settings.userAllowlist);
     if (trust.trusted) return;
 
-    const isLocal = Scoring.isLoopbackHost(hostOf(details.url));
-    const isPrivate = !isLocal && Scoring.isLocalHost(hostOf(details.url));
+    const isLocalAddress = Scoring.isLocalHost(hostOf(details.url));
     let urlResult = Scoring.analyzeURL(details.url);
-    // Blocking never depends on the AI for private network addresses, so skip the call.
-    const aiResult = isLocal || isPrivate ? null : await Api.predict(details.url, settings, 2500);
+    // Blocking never depends on the AI for local or private addresses, so skip the call here.
+    const aiResult = isLocalAddress ? null : await Api.predict(details.url, settings, 2500);
     if (aiResult && aiResult.intel) urlResult = Scoring.applyIntel(urlResult, aiResult.intel);
 
     const combined = Scoring.calculateCombinedScore(details.url, urlResult, null, aiResult, {
       thresholds: Settings.thresholds(settings),
       trust,
-      aiSkipped: isLocal
+      aiSkipped: false,
+      aiAdvisory: isLocalAddress
     });
     await maybeBlock(details.tabId, details.url, combined);
   } catch (e) {
@@ -202,22 +202,22 @@ async function runAutomaticScan(tabId, url) {
     const settings = await getSettings();
     const trust = Scoring.trustStatus(url, settings.userAllowlist);
 
-    // Only the user's own machine (localhost, 127.x.x.x) is skipped. Private network
-    // sites such as a college portal on 172.16.x.x are analysed like any other site.
-    const isLocal = Scoring.isLoopbackHost(hostOf(url));
-    const isPrivate = !isLocal && Scoring.isLocalHost(hostOf(url));
+    // Local addresses (localhost, 127.x.x.x) and private networks (10.x, 172.16-31.x,
+    // 192.168.x) are analysed by the AI too. The answer is advisory there: shown in the
+    // report, but not counted in the score or in blocking.
+    const isLocalAddress = Scoring.isLocalHost(hostOf(url));
     let urlResult = Scoring.analyzeURL(url);
     const [pageResult, aiResult] = await Promise.all([
       requestPageDOM(tabId),
-      isLocal ? Promise.resolve(null) : Api.predict(url, settings)
+      Api.predict(url, settings)
     ]);
     if (aiResult && aiResult.intel) urlResult = Scoring.applyIntel(urlResult, aiResult.intel);
 
     const combined = Scoring.calculateCombinedScore(url, urlResult, pageResult, aiResult, {
       thresholds: Settings.thresholds(settings),
       trust,
-      aiSkipped: isLocal,
-      aiAdvisory: isPrivate
+      aiSkipped: false,
+      aiAdvisory: isLocalAddress
     });
 
     await setTabScan(tabId, {

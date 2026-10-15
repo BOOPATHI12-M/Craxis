@@ -1,0 +1,11 @@
+# Render Blueprint: Craxis backend (Docker web service).
+services:
+  - type: web
+    name: craxis-api
+    runtime: docker
+    plan: starter          # free tier sleeps after 15 min idle; first request can take ~50 s
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: AIPHISH_ENABLE_INTEL
+        value: "0"

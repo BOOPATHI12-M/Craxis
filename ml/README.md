@@ -86,6 +86,6 @@ Conclusions of the model investigations. The detailed reports were removed from 
 | Use PhreshPhish data to improve the model? | Tried, not promoted | A model trained on it, and a combined model, beat v3 on real-browsing URLs but lost on v3's own held-out set, flagged legitimate shared-hosting sites, and failed an independent homepage test |
 | Active model | v3 (`phishing_model.pkl`) | Reproducible with `build_dataset.py` and `train_model.py`. Held-out ROC-AUC about 0.92 |
 | AI on private network addresses (10.x, 172.16-31.x, 192.168.x) | Shown, not counted | The model learned from public websites, where numeric addresses are mostly phishing |
-| AI on this computer's own address | Not applied | localhost and 127.x.x.x are never sent to the model |
+| AI on this computer's own address | Shown, not counted | localhost and 127.x.x.x get the AI answer for information, like private networks |
 
 Remaining weaknesses: legitimate sites on shared hosting platforms are often flagged, and the legitimate class is partly synthetic. Better evidence would need a verified benign sample of pages you actually browse (see `tools/evaluate_on_my_history.py`).

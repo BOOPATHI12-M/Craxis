@@ -67,7 +67,7 @@ Tab navigation ──► background.js (service worker)
 
 Two extra rules apply. When every available layer scores 50 or more, the result is raised to at least the DANGEROUS threshold. Trusted sites are capped at 20.
 
-The AI model is **not** applied to `localhost` and private network addresses, because it is trained on public web URLs.
+On `localhost` and private network addresses (10.x, 172.16-31.x, 192.168.x) the AI result is shown for information but is **not counted** in the score or in blocking, because the model is trained on public web URLs.
 
 ---
 

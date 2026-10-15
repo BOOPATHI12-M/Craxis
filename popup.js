@@ -144,24 +144,21 @@ async function runScanForTab(tab, isManual = false) {
     const pageResult = await requestPageAnalysis(tab);
 
     updateProgressText("Consulting the Random Forest AI model...");
-    let isLocal = false;
-    let isPrivate = false;
+    let isLocalAddress = false;
     try {
-      const host = new URL(url).hostname;
-      isLocal = Scoring.isLoopbackHost(host);
-      isPrivate = !isLocal && Scoring.isLocalHost(host);
+      isLocalAddress = Scoring.isLocalHost(new URL(url).hostname);
     } catch (e) {
-      isLocal = false;
+      isLocalAddress = false;
     }
-    const aiResult = isLocal ? null : await BackendApi.predict(url, popupSettings, 3500);
+    const aiResult = await BackendApi.predict(url, popupSettings, 3500);
     if (aiResult && aiResult.intel) urlResult = Scoring.applyIntel(urlResult, aiResult.intel);
 
     updateProgressText("Generating explainable security report...");
     const combinedResult = Scoring.calculateCombinedScore(url, urlResult, pageResult, aiResult, {
       thresholds: SettingsStore.thresholds(popupSettings),
       trust,
-      aiSkipped: isLocal,
-      aiAdvisory: isPrivate
+      aiSkipped: false,
+      aiAdvisory: isLocalAddress
     });
 
     // Save result to background.js in-memory store
@@ -498,7 +495,7 @@ function displayCombinedResultFromObj(res) {
   if (webpageCalcText) webpageCalcText.textContent = res.hasPageData ? `${safeWebScore} × ${(pageWeight * 100).toFixed(0)}% = ${pageContrib.toFixed(1)}` : "N/A";
   if (aiCalcText) {
     aiCalcText.textContent = res.aiAdvisory
-      ? "shown for information, not counted (private network)"
+      ? "shown for information, not counted (local or private address)"
       : (res.hasAIData ? `${safeAiScore} × ${(aiWeight * 100).toFixed(0)}% = ${aiContrib.toFixed(1)}` : "N/A");
   }
   if (finalCalcText) {
@@ -785,8 +782,8 @@ function renderAIExplanation(aiResult, url) {
     } catch (e) {
       host = "";
     }
-    if (/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)) {
-      parts.push("This is a private network address. The model learned from public websites, where numeric addresses are mostly phishing, so such addresses score high even for real internal sites. Treat this score with caution.");
+    if (/^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host) || host === "localhost") {
+      parts.push("This is a local or private network address. The model learned from public websites, where numeric addresses are mostly phishing, so such addresses score high even for real internal sites. The AI result is shown for information and is not counted in the score.");
     }
     note.textContent = parts.join(" ");
   }
